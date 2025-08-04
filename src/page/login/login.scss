@@ -1,0 +1,58 @@
+/* login.scss */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #74ABE2, #5563DE);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .login-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+
+      &:focus {
+        border-color: #5563DE;
+        box-shadow: 0 0 5px rgba(85, 99, 222, 0.5);
+      }
+    }
+
+    button {
+      padding: 12px;
+      background: #5563DE;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: #3f4cc4;
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+/* Main.css */
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-box {
+  background: #fff;
+  padding: 40px 60px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 320px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 0;
+  background: #4a6eff;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.btn:hover {
+  background: #3b57cc;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(58, 87, 255, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+@media (max-width: 400px) {
+  .form-box {
+    width: 90vw;
+    padding: 30px 20px;
+  }
+  .button-group {
+    flex-direction: column;
+  }
+  .btn {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .btn:last-child {
+    margin-bottom: 0;
+  }
+}

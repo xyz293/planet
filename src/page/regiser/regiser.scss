@@ -1,0 +1,67 @@
+.register {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh; // 占满全屏
+
+  &-form {
+    flex: 1;
+    padding: 40px;
+    text-align: center;
+    max-width: 500px;
+    margin: auto;
+
+    .register-title {
+      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .register-input {
+      width: 100%;
+      margin: 10px 0;
+      height: 40px;
+    }
+
+    .register-smsCode {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+
+      &-input {
+        flex: 2;
+        margin-right: 10px;
+      }
+
+      &-btn {
+        flex: 1;
+        height: 40px;
+      }
+    }
+
+    .register-button {
+      width: 100%;
+      margin-top: 20px;
+      height: 45px;
+      font-size: 16px;
+    }
+  }
+
+  &-pic {
+    flex: 1;
+    background: #f8f8f8;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-img {
+      width: 80%;
+      height: 80%;
+      background-image: url('https://img.js.design/assets/img/629acc87823cb0cf86ffe85b.jpg#e09a94dfceb3e31505a2fe11ea6ab2ea');
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+    }
+  }
+}
