@@ -153,6 +153,82 @@ server.post('/course', (req, res) => {
   router.db.get('courses').push(newCourse).write()
   res.json({ success: true, course: newCourse })
 })
+// 根据多个字段筛选课程（模糊搜索）
+server.get('/course/search', (req, res) => {
+  const { university, title, teacher } = req.query;
+
+  let courses = router.db.get('courses').value();
+
+  if (university) {
+    courses = courses.filter(course => course.university === university);
+  }
+
+  if (title) {
+    courses = courses.filter(course => course.title.includes(title));
+  }
+
+  if (teacher) {
+    courses = courses.filter(course => course.teacher.includes(teacher));
+  }
+
+  res.json({ success: true, data: courses });
+});
+// 获取高校列表接口
+server.get('/university/list', (req, res) => {
+  const courses = router.db.get('courses').value();
+  const universities = router.db.get('universities').value();
+
+  const universitiesSet = new Set(courses.map(course => course.university));
+  const filteredUniversities = universities.filter(u => universitiesSet.has(u.name));
+
+  console.log(`返回学校数: ${filteredUniversities.length}`);
+  res.json({ success: true, data: filteredUniversities });
+});
+
+// 支持多字段查询职业规划接口
+server.get('/careerPlan/search', (req, res) => {
+  const { major, position, skill } = req.query;
+
+  let plans = router.db.get('careerPlans').value();
+
+  if (major) {
+    plans = plans.filter(p => p.major.includes(major));
+  }
+
+  if (position) {
+    plans = plans.filter(p =>
+      p.recommendedPositions.some(pos => pos.includes(position))
+    );
+  }
+
+  if (skill) {
+    plans = plans.filter(p =>
+      p.skillsRequired.some(s => s.includes(skill))
+    );
+  }
+
+  res.json({ success: true, data: plans });
+});
+server.get('/careerPlan/majors', (req, res) => {
+  const plans = router.db.get('careerPlans').value();
+  const majors = plans.map(plan => plan.major);
+  res.json({ success: true, data: majors });
+});
+
+server.get('/university/:name', (req, res) => {
+  const name = decodeURIComponent(req.params.name);
+  const universities = router.db.get('universities').value();
+
+  // 精确匹配学校名，忽略大小写
+  const university = universities.find(u => u.name.toLowerCase() === name.toLowerCase());
+
+  if (!university) {
+    return res.status(404).json({ success: false, message: '学校不存在' });
+  }
+
+  res.json({ success: true, data: university });
+});
+
 
 // 删除课程
 server.delete('/course/:id', (req, res) => {
@@ -188,6 +264,23 @@ server.get('/company/page', (req, res) => {
   }
 
   res.json({ success: true, data: companies })
+})
+server.get('/resources', (req, res) => {
+  const resources = router.db.get('resources').value()
+  res.json({ success: true, data: resources })
+})
+
+
+// 📝 获取单个资源详情
+server.get('/resources/:id', (req, res) => { 
+  const id = Number(req.params.id)
+  const resource = router.db.get('resources').find({ id }).value()
+
+  if (!resource) {
+    return res.status(404).json({ success: false, message: '资源不存在' })
+  }
+
+  res.json({ success: true, data: resource })
 })
 
 // 📌 获取单个企业详情

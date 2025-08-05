@@ -33,7 +33,7 @@
       "createdAt": "2025-08-02T14:20:00Z"
     }
   ],
- "courses": [
+"courses": [
   {
     "id": 1,
     "title": "计算机导论",
@@ -63,8 +63,59 @@
     "schedule": "周五 13:00-15:00",
     "department": "人工智能研究院",
     "university": "清华大学"
+  },
+  {
+    "id": 4,
+    "title": "深度学习导论",
+    "teacher": "王教授",
+    "credit": 3,
+    "description": "介绍深度神经网络的基本原理与实践应用",
+    "schedule": "周二 10:00-12:00",
+    "department": "人工智能研究院",
+    "university": "清华大学"
+  },
+  {
+    "id": 5,
+    "title": "数据库系统",
+    "teacher": "李老师",
+    "credit": 3,
+    "description": "学习数据库设计、SQL查询语言等基础知识",
+    "schedule": "周四 13:00-15:00",
+    "department": "计算机科学系",
+    "university": "北京大学"
+  },
+  {
+    "id": 6,
+    "title": "操作系统原理",
+    "teacher": "周老师",
+    "credit": 4,
+    "description": "操作系统基本原理，包括进程调度和内存管理",
+    "schedule": "周三 9:00-12:00",
+    "department": "计算机科学系",
+    "university": "浙江大学"
+  },
+  {
+    "id": 7,
+    "title": "编译原理",
+    "teacher": "刘教授",
+    "credit": 3,
+    "description": "学习编译器的设计与实现过程",
+    "schedule": "周五 8:00-10:00",
+    "department": "计算机科学系",
+    "university": "复旦大学"
+  },
+  {
+    "id": 8,
+    "title": "计算机网络",
+    "teacher": "陈老师",
+    "credit": 3,
+    "description": "讲解网络协议、OSI模型及网络安全基础",
+    "schedule": "周四 14:00-16:00",
+    "department": "信息工程学院",
+    "university": "西南石油大学"
   }
 ],
+
   "enterpriseNeeds": [
     {
       "id": 1,
@@ -126,51 +177,169 @@
       "publishDate": "2025-07-30"
     }
   ],
-  "careerPlans": [
+ "careerPlans": [
     {
       "id": 1,
       "major": "计算机科学",
-      "recommendedPositions": [
-        "软件工程师",
-        "数据分析师",
-        "人工智能工程师"
-      ],
-      "skillsRequired": [
-        "编程基础",
-        "算法",
-        "机器学习"
-      ],
+      "recommendedPositions": ["软件工程师", "数据分析师", "人工智能工程师"],
+      "skillsRequired": ["编程基础", "算法", "机器学习"],
       "advice": "建议重点学习数据结构和算法，掌握Python和Java语言。"
     },
     {
       "id": 2,
       "major": "电子信息",
-      "recommendedPositions": [
-        "嵌入式开发",
-        "硬件设计工程师",
-        "通信工程师"
-      ],
-      "skillsRequired": [
-        "C语言",
-        "电路设计",
-        "信号处理"
-      ],
+      "recommendedPositions": ["嵌入式开发", "硬件设计工程师", "通信工程师"],
+      "skillsRequired": ["C语言", "电路设计", "信号处理"],
       "advice": "加强硬件设计和嵌入式系统开发能力，注重实践。"
     },
     {
       "id": 3,
       "major": "人工智能",
-      "recommendedPositions": [
-        "计算机视觉工程师",
-        "自然语言处理工程师",
-        "强化学习研究员"
-      ],
-      "skillsRequired": [
-        "深度学习",
-        "数学基础",
-        "Python"
-      ],
+      "recommendedPositions": ["计算机视觉工程师", "自然语言处理工程师", "强化学习研究员"],
+      "skillsRequired": ["深度学习", "数学基础", "Python"],
       "advice": "多参加AI竞赛和开源项目，积累实践经验。"
+    },
+    {
+      "id": 4,
+      "major": "金融学",
+      "recommendedPositions": ["金融分析师", "投资顾问", "风险管理师"],
+      "skillsRequired": ["财务分析", "Excel建模", "统计学"],
+      "advice": "建议考取CFA、FRM等证书，强化数据分析与金融理论基础。"
+    },
+    {
+      "id": 5,
+      "major": "法学",
+      "recommendedPositions": ["律师", "法务专员", "合规经理"],
+      "skillsRequired": ["法律条文理解", "逻辑推理", "写作能力"],
+      "advice": "建议考取司法考试，提升写作与口头表达能力，积累实务经验。"
+    },
+    {
+      "id": 6,
+      "major": "心理学",
+      "recommendedPositions": ["心理咨询师", "人力资源专员", "用户研究员"],
+      "skillsRequired": ["心理评估", "沟通能力", "数据分析"],
+      "advice": "可考取心理咨询师资格证，结合实际案例加强理解。"
+    },
+    {
+      "id": 7,
+      "major": "设计学",
+      "recommendedPositions": ["UI/UX设计师", "平面设计师", "交互设计师"],
+      "skillsRequired": ["设计软件", "用户体验", "视觉传达"],
+      "advice": "建立作品集，参与实际项目或比赛，不断提升审美与表达能力。"
+    },
+    {
+      "id": 8,
+      "major": "新闻传播",
+      "recommendedPositions": ["新媒体运营", "内容编辑", "公关专员"],
+      "skillsRequired": ["写作能力", "内容策划", "传播策略"],
+      "advice": "建议多做实习积累经验，保持对热点话题和传播趋势的敏感度。"
+    },
+    {
+      "id": 9,
+      "major": "环境科学",
+      "recommendedPositions": ["环境工程师", "可持续发展顾问", "生态评估员"],
+      "skillsRequired": ["环境监测", "数据分析", "政策理解"],
+      "advice": "注重跨学科知识学习，了解最新环保政策和绿色技术。"
+    },
+    {
+      "id": 10,
+      "major": "数学与应用数学",
+      "recommendedPositions": ["算法工程师", "数据科学家", "金融建模师"],
+      "skillsRequired": ["高等数学", "统计分析", "编程"],
+      "advice": "多练习实际建模项目，建议参加数学建模竞赛提升应用能力。"
     }
-  ]
+  ],
+  "universities": [
+  {
+    "id": 1,
+    "name": "西南石油大学",
+    "location": "四川省成都市",
+    "type": "理工类",
+    "established": 1958,
+    "website": "http://www.swpu.edu.cn",
+    "description": "以石油和石化为特色的工科学校，国家‘211工程’重点建设高校。"
+  },
+  {
+    "id": 2,
+    "name": "北京大学",
+    "location": "北京市海淀区",
+    "type": "综合大学",
+    "established": 1898,
+    "website": "http://www.pku.edu.cn",
+    "description": "中国顶尖综合性大学，文理兼备，国际声誉卓著。"
+  },
+  {
+    "id": 3,
+    "name": "清华大学",
+    "location": "北京市海淀区",
+    "type": "综合大学",
+    "established": 1911,
+    "website": "http://www.tsinghua.edu.cn",
+    "description": "中国著名理工类大学，工科实力尤为强劲。"
+  },
+  {
+    "id": 4,
+    "name": "浙江大学",
+    "location": "浙江省杭州市",
+    "type": "综合大学",
+    "established": 1897,
+    "website": "http://www.zju.edu.cn",
+    "description": "中国顶尖大学之一，学科门类齐全，科研实力雄厚。"
+  },
+  {
+    "id": 5,
+    "name": "复旦大学",
+    "location": "上海市杨浦区",
+    "type": "综合大学",
+    "established": 1905,
+    "website": "http://www.fudan.edu.cn",
+    "description": "著名综合性大学，文理结合，注重国际化发展。"
+  },
+  {
+    "id": 6,
+    "name": "上海交通大学",
+    "location": "上海市闵行区",
+    "type": "理工类",
+    "established": 1896,
+    "website": "http://www.sjtu.edu.cn",
+    "description": "工科实力突出，上海重要的研究型大学。"
+  },
+  {
+    "id": 7,
+    "name": "南京大学",
+    "location": "江苏省南京市",
+    "type": "综合大学",
+    "established": 1902,
+    "website": "http://www.nju.edu.cn",
+    "description": "历史悠久的综合性大学，基础学科研究领先。"
+  },
+  {
+    "id": 8,
+    "name": "华中科技大学",
+    "location": "湖北省武汉市",
+    "type": "理工类",
+    "established": 1952,
+    "website": "http://www.hust.edu.cn",
+    "description": "华中地区重点高校，工科和医学见长。"
+  },
+  {
+    "id": 9,
+    "name": "中国科学技术大学",
+    "location": "安徽省合肥市",
+    "type": "理工类",
+    "established": 1958,
+    "website": "http://www.ustc.edu.cn",
+    "description": "中国科学院直属高校，理工科研究领先。"
+  },
+  {
+    "id": 10,
+    "name": "哈尔滨工业大学",
+    "location": "黑龙江省哈尔滨市",
+    "type": "理工类",
+    "established": 1920,
+    "website": "http://www.hit.edu.cn",
+    "description": "老牌工科学校，机器人和航天领域知名。"
+  }
+]
+
 }
