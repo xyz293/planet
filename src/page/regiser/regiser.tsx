@@ -1,6 +1,6 @@
 import { Input, Button } from "antd";
 import "../regiser/regiser.scss"; 
-import { sendcode,register } from "../../api/user";
+import { sendcode,register } from "../../api/student/user";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Register = () => {

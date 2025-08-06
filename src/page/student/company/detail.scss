@@ -1,37 +1,66 @@
 .detail-company {
-  max-width: 700px;
+  max-width: 800px;
   margin: 40px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 30px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.7;
   color: #333;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 
-  h2 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #222;
+  .loading, .error {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 18px;
+    color: #888;
   }
 
-  p {
-    font-size: 17px;
-    line-height: 1.5;
-    margin: 8px 0;
-    position: relative;
-    padding-left: 16px;
+  .error {
+    color: #d32f2f;
+  }
 
-    &::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background-color: #3b82f6; /* 蓝色圆点 */
-      border-radius: 50%;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+  h2 {
+    color: #1976d2;
+    margin-bottom: 16px;
+    font-size: 24px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+
+  .company-section, .job-section {
+    margin-bottom: 40px;
+  }
+
+  .company-name {
+    color: #2e7d32;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+
+    li {
+      margin: 8px 0;
+      padding: 6px 0;
+      border-bottom: 1px dashed #ddd;
+      font-size: 15px;
     }
+  }
+
+  .job-description {
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 15px;
+    white-space: pre-wrap;
+  }
+
+  .no-data {
+    text-align: center;
+    color: #999;
+    font-style: italic;
   }
 }

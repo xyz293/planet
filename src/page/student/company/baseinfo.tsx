@@ -1,7 +1,19 @@
-import { getcompany ,getcompany1} from '../../../api/company'
+import { getcompany ,getcompany1} from '../../../api/student/company'
 import { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom'
 import DetailPage from './detail-page'
+interface Job {
+  id: number;
+  enterpriseId: number;
+  title: string;
+  description: string;
+  requiredSkills: string[];
+  salary: string;
+  location: string;
+  // 可选：添加更多字段，如发布时间
+  // createdAt?: string; 
+}
+
 
 interface Company {
   id: number
@@ -9,6 +21,8 @@ interface Company {
   location: string
   position: string
   salary: string
+  jobDetail:Job
+
 }
 
 const Baseinfo = () => {
@@ -20,8 +34,8 @@ const Baseinfo = () => {
   const [showDetail, setShowDetail] = useState(true)
   const [showbutton, setShowbutton] = useState(false)
 
-  const getDetail = (id: number) => {
-    navigate(`/company/${id}`)
+  const getDetail = (id: number,jobid:number) => {
+    navigate(`/company/${id}/${jobid}`)
     console.log('查看公司详情，ID:', id)
   }
 
@@ -29,6 +43,8 @@ const Baseinfo = () => {
     try {
       const res = await getcompany()
       setCompanies(res.data.data)
+      console.log(res)
+
     } catch (error) {
       console.error('获取公司信息失败:', error)
     }
@@ -94,7 +110,7 @@ const Baseinfo = () => {
         {companies.map((item) => (
           <li
             key={item.id}
-            onClick={() => getDetail(item.id)}
+            onClick={() => getDetail(item.id,item.jobDetail.id)}
             style={{
               backgroundColor: '#fff',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',

@@ -1,4 +1,4 @@
-import {login} from '../../api/user'
+import {login} from '../../api/student/user'
 import { useState } from 'react'
 import userstore from '../../store/user'
 import './login.scss'

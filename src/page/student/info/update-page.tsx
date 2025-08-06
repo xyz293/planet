@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import { Button, Form, Input } from 'antd';
-import {updateUserInfo} from '../../../api/user'
+import {updateUserInfo} from '../../../api/student/user'
 import userStore from '../../../store/user'
 const onFinish = values => {
   console.log('提交的数据:', values);

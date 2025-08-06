@@ -1,6 +1,8 @@
 import React from 'react';
 import UserInfo from '../student/info/userinfon'
 import Baseinfo from '../student/company/baseinfo'
+import CollegeGudice from '../student/college/basecollege'
+import Basework from '../student/work/basework'
 import {useState} from 'react';
 import {
   AppstoreOutlined,
@@ -37,7 +39,9 @@ const items = [
 ].map((icon, index) => {
   const labels = [
    '个人信息',
-   '公司信息'
+   '公司信息',
+   "校园指导",
+   "求职信息",
   ];
   return {
     key: String(index + 1),
@@ -54,13 +58,10 @@ const Student = () => {
       case '2':
         return <Baseinfo/>;
       case '3':
-        return <div>这里是上传中心内容</div>;
+        return <CollegeGudice/>;
       case '4':
-        return <div>这里是数据统计内容</div>;
-      case '5':
-        return <div>这里是云服务内容</div>;
-      default:
-        return null;
+        return <Basework/>;
+
     }
   };
   const {
