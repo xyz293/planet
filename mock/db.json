@@ -150,109 +150,430 @@
     }
   ],
   "enterpriseNeeds": [
-    {
-      "id": 1,
-      "company": "华为",
-      "position": "软件工程师",
-      "requirement": "熟悉Java，具备良好的沟通能力，英语四级以上",
-      "location": "深圳",
-      "salary": "15k-25k/月",
-      "postedAt": "2025-07-20",
-      "enterpriseId": 5001,
-      "jobDetail": {
-        "id": 101,
-        "enterpriseId": 5001,
-        "title": "Java开发工程师",
-        "description": "负责公司核心业务系统开发和维护",
-        "requiredSkills": [
-          "Java",
-          "SpringBoot",
-          "MySQL",
-          "Redis"
-        ],
-        "salary": "15k-25k",
-        "location": "深圳"
-      }
-    },
-    {
-      "id": 2,
-      "company": "阿里巴巴",
-      "position": "前端开发工程师",
-      "requirement": "熟练使用Vue或React，了解Node.js，良好的团队合作能力",
-      "location": "杭州",
-      "salary": "18k-28k/月",
-      "postedAt": "2025-07-22",
-      "enterpriseId": 5002,
-      "jobDetail": {
-        "id": 103,
-        "enterpriseId": 5002,
-        "title": "前端开发工程师",
-        "description": "负责微信小程序和H5项目开发",
-        "requiredSkills": [
-          "JavaScript",
-          "Vue",
-          "TypeScript",
-          "CSS"
-        ],
-        "salary": "18k-30k",
-        "location": "杭州"
-      }
-    },
-    {
-  "id": 3,
-  "company": "字节跳动",
-  "position": "后端开发工程师",
-  "requirement": "精通Go语言或Java，有高并发系统开发经验",
-  "location": "北京",
-  "salary": "20k-30k/月",
-  "postedAt": "2025-07-25",
+  {
+    "id": 1,
+    "company": "华为",
+    "location": "深圳",
+    "postedAt": "2025-07-20",
+    "enterpriseId": 5001,
+    "jobDetails": [
+      {
+  "id": 107,
   "enterpriseId": 5003,
-  "jobDetails": [  
-    {
-      "id": 104,
-      "enterpriseId": 5003,
-      "title": "产品经理",
-      "description": "对接电商平台业务需求与产品落地",
-      "requiredSkills": [
-        "Axure",
-        "数据分析",
-        "项目管理"
-      ],
-      "salary": "20k-28k",
-      "location": "北京"
-    },
-    {
-      "id": 105,
-      "enterpriseId": 5003,
-      "title": "后端开发工程师",
-      "description": "负责高性能服务端开发和优化",
-      "requiredSkills": [
-        "Go",
-        "Java",
-        "分布式系统",
-        "MySQL"
-      ],
-      "salary": "22k-32k",
-      "location": "北京"
-    },
-    {
-      "id": 106,
-      "enterpriseId": 5003,
-      "title": "前端开发工程师",
-      "description": "负责公司Web端产品开发",
-      "requiredSkills": [
-        "React",
-        "TypeScript",
-        "CSS",
-        "前端性能优化"
-      ],
-      "salary": "18k-28k",
-      "location": "北京"
-    }
-  ]
-}
-
+  "title": "全栈开发工程师",
+  "description": "参与前后端系统的架构设计与开发，负责从需求到上线的全流程，打造高效、稳定的技术解决方案。",
+  "requiredSkills": ["React", "Node.js", "MongoDB", "Docker", "Express", "RESTful API", "Git"],
+  "preferredSkills": ["TypeScript", "Next.js", "Kubernetes", "微服务", "消息队列"],
+  "salary": "22k-35k",
+  "location": "杭州",
+  "workType": "全职",
+  "experience": "3-6年",
+  "education": "本科及以上",
+  "department": "技术研发中心",
+  "reportTo": "技术总监",
+  "responsibilities": [
+    "独立负责或主导全栈项目的开发与迭代",
+    "设计并实现高性能、可扩展的后端API服务",
+    "开发响应式、用户体验优秀的前端界面",
+    "负责系统部署、监控和运维，保障服务稳定性",
+    "编写技术文档，分享技术经验"
   ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "3年以上全栈开发经验，有完整项目落地经验",
+    "精通至少一种前端框架（React/Vue）和后端框架（Node.js/Express）",
+    "熟悉常用数据库（MongoDB/MySQL）和NoSQL技术",
+    "了解容器化（Docker）和CI/CD流程",
+    "具备强烈的责任心和优秀的学习能力"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充商业保险",
+    "年度体检",
+    "带薪年假",
+    "餐补、房补",
+    "免费三餐和下午茶",
+    "丰富的技术分享",
+    "弹性工作制"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术初面",
+    "技术复试",
+    "架构面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "赵 HR",
+    "email": "zhao.hr@alibaba.com"
+  },
+  "postedAt": "2025-07-22",
+  "validUntil": "2025-08-22",
+  "status": "招聘中",
+  "views": 1985,
+  "applications": 134
+},
+       {
+  "id": 107,
+  "enterpriseId": 5003,
+  "title": "全栈开发工程师",
+  "description": "参与前后端系统的架构设计与开发，负责从需求到上线的全流程，打造高效、稳定的技术解决方案。",
+  "requiredSkills": ["React", "Node.js", "MongoDB", "Docker", "Express", "RESTful API", "Git"],
+  "preferredSkills": ["TypeScript", "Next.js", "Kubernetes", "微服务", "消息队列"],
+  "salary": "22k-35k",
+  "location": "杭州",
+  "workType": "全职",
+  "experience": "3-6年",
+  "education": "本科及以上",
+  "department": "技术研发中心",
+  "reportTo": "技术总监",
+  "responsibilities": [
+    "独立负责或主导全栈项目的开发与迭代",
+    "设计并实现高性能、可扩展的后端API服务",
+    "开发响应式、用户体验优秀的前端界面",
+    "负责系统部署、监控和运维，保障服务稳定性",
+    "编写技术文档，分享技术经验"
+  ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "3年以上全栈开发经验，有完整项目落地经验",
+    "精通至少一种前端框架（React/Vue）和后端框架（Node.js/Express）",
+    "熟悉常用数据库（MongoDB/MySQL）和NoSQL技术",
+    "了解容器化（Docker）和CI/CD流程",
+    "具备强烈的责任心和优秀的学习能力"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充商业保险",
+    "年度体检",
+    "带薪年假",
+    "餐补、房补",
+    "免费三餐和下午茶",
+    "丰富的技术分享",
+    "弹性工作制"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术初面",
+    "技术复试",
+    "架构面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "赵 HR",
+    "email": "zhao.hr@alibaba.com"
+  },
+  "postedAt": "2025-07-22",
+  "validUntil": "2025-08-22",
+  "status": "招聘中",
+  "views": 1985,
+  "applications": 134
+}
+    ]
+  },
+  {
+    "id": 2,
+    "company": "阿里巴巴",
+   
+    "location": "杭州",
+    "postedAt": "2025-07-22",
+    "enterpriseId": 5002,
+    "jobDetails": [
+      {
+  "id": 107,
+  "enterpriseId": 5003,
+  "title": "全栈开发工程师",
+  "description": "参与前后端系统的架构设计与开发，负责从需求到上线的全流程，打造高效、稳定的技术解决方案。",
+  "requiredSkills": ["React", "Node.js", "MongoDB", "Docker", "Express", "RESTful API", "Git"],
+  "preferredSkills": ["TypeScript", "Next.js", "Kubernetes", "微服务", "消息队列"],
+  "salary": "22k-35k",
+  "location": "杭州",
+  "workType": "全职",
+  "experience": "3-6年",
+  "education": "本科及以上",
+  "department": "技术研发中心",
+  "reportTo": "技术总监",
+  "responsibilities": [
+    "独立负责或主导全栈项目的开发与迭代",
+    "设计并实现高性能、可扩展的后端API服务",
+    "开发响应式、用户体验优秀的前端界面",
+    "负责系统部署、监控和运维，保障服务稳定性",
+    "编写技术文档，分享技术经验"
+  ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "3年以上全栈开发经验，有完整项目落地经验",
+    "精通至少一种前端框架（React/Vue）和后端框架（Node.js/Express）",
+    "熟悉常用数据库（MongoDB/MySQL）和NoSQL技术",
+    "了解容器化（Docker）和CI/CD流程",
+    "具备强烈的责任心和优秀的学习能力"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充商业保险",
+    "年度体检",
+    "带薪年假",
+    "餐补、房补",
+    "免费三餐和下午茶",
+    "丰富的技术分享",
+    "弹性工作制"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术初面",
+    "技术复试",
+    "架构面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "赵 HR",
+    "email": "zhao.hr@alibaba.com"
+  },
+  "postedAt": "2025-07-22",
+  "validUntil": "2025-08-22",
+  "status": "招聘中",
+  "views": 1985,
+  "applications": 134
+},
+     {
+  "id": 107,
+  "enterpriseId": 5003,
+  "title": "全栈开发工程师",
+  "description": "参与前后端系统的架构设计与开发，负责从需求到上线的全流程，打造高效、稳定的技术解决方案。",
+  "requiredSkills": ["React", "Node.js", "MongoDB", "Docker", "Express", "RESTful API", "Git"],
+  "preferredSkills": ["TypeScript", "Next.js", "Kubernetes", "微服务", "消息队列"],
+  "salary": "22k-35k",
+  "location": "杭州",
+  "workType": "全职",
+  "experience": "3-6年",
+  "education": "本科及以上",
+  "department": "技术研发中心",
+  "reportTo": "技术总监",
+  "responsibilities": [
+    "独立负责或主导全栈项目的开发与迭代",
+    "设计并实现高性能、可扩展的后端API服务",
+    "开发响应式、用户体验优秀的前端界面",
+    "负责系统部署、监控和运维，保障服务稳定性",
+    "编写技术文档，分享技术经验"
+  ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "3年以上全栈开发经验，有完整项目落地经验",
+    "精通至少一种前端框架（React/Vue）和后端框架（Node.js/Express）",
+    "熟悉常用数据库（MongoDB/MySQL）和NoSQL技术",
+    "了解容器化（Docker）和CI/CD流程",
+    "具备强烈的责任心和优秀的学习能力"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充商业保险",
+    "年度体检",
+    "带薪年假",
+    "餐补、房补",
+    "免费三餐和下午茶",
+    "丰富的技术分享",
+    "弹性工作制"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术初面",
+    "技术复试",
+    "架构面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "赵 HR",
+    "email": "zhao.hr@alibaba.com"
+  },
+  "postedAt": "2025-07-22",
+  "validUntil": "2025-08-22",
+  "status": "招聘中",
+  "views": 1985,
+  "applications": 134
+}
+    ]
+  },
+  {
+    "id": 3,
+    "company": "字节跳动",
+     "location": "深圳",
+    "postedAt": "2025-07-20",
+    "enterpriseId": 5003,
+    "jobDetails": [
+     {
+  "id": 107,
+  "enterpriseId": 5003,
+  "title": "全栈开发工程师",
+  "description": "参与前后端系统的架构设计与开发，负责从需求到上线的全流程，打造高效、稳定的技术解决方案。",
+  "requiredSkills": ["React", "Node.js", "MongoDB", "Docker", "Express", "RESTful API", "Git"],
+  "preferredSkills": ["TypeScript", "Next.js", "Kubernetes", "微服务", "消息队列"],
+  "salary": "22k-35k",
+  "location": "杭州",
+  "workType": "全职",
+  "experience": "3-6年",
+  "education": "本科及以上",
+  "department": "技术研发中心",
+  "reportTo": "技术总监",
+  "responsibilities": [
+    "独立负责或主导全栈项目的开发与迭代",
+    "设计并实现高性能、可扩展的后端API服务",
+    "开发响应式、用户体验优秀的前端界面",
+    "负责系统部署、监控和运维，保障服务稳定性",
+    "编写技术文档，分享技术经验"
+  ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "3年以上全栈开发经验，有完整项目落地经验",
+    "精通至少一种前端框架（React/Vue）和后端框架（Node.js/Express）",
+    "熟悉常用数据库（MongoDB/MySQL）和NoSQL技术",
+    "了解容器化（Docker）和CI/CD流程",
+    "具备强烈的责任心和优秀的学习能力"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充商业保险",
+    "年度体检",
+    "带薪年假",
+    "餐补、房补",
+    "免费三餐和下午茶",
+    "丰富的技术分享",
+    "弹性工作制"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术初面",
+    "技术复试",
+    "架构面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "赵 HR",
+    "email": "zhao.hr@alibaba.com"
+  },
+  "postedAt": "2025-07-22",
+  "validUntil": "2025-08-22",
+  "status": "招聘中",
+  "views": 1985,
+  "applications": 134
+},
+     {
+  "id": 103,
+  "enterpriseId": 5003,
+  "title": "前端开发工程师",
+  "description": "负责微信小程序和H5项目开发，构建高性能、高可用的前端应用，提升用户体验和产品竞争力。",
+  "requiredSkills": ["JavaScript", "Vue", "TypeScript", "CSS", "HTML5", "Webpack", "Git"],
+  "preferredSkills": ["React", "Node.js", "小程序原生开发", "PWA", "性能优化"],
+  "salary": "18k-30k",
+  "location": "杭州",
+  "workType": "全职",
+  "experience": "2-5年",
+  "education": "本科及以上",
+  "department": "前端技术部",
+  "reportTo": "前端技术经理",
+  "responsibilities": [
+    "负责公司核心产品的前端开发与维护",
+    "与UI设计师、后端工程师紧密协作，实现产品需求",
+    "优化前端性能，提升页面加载速度和交互体验",
+    "参与前端技术选型和架构设计，推动组件化和工程化建设"
+  ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "2年以上前端开发经验，精通Vue或React框架",
+    "熟练掌握JavaScript、TypeScript、HTML5、CSS3",
+    "熟悉前端构建工具（Webpack/Vite）和版本管理（Git）",
+    "具备良好的审美和用户体验意识，有复杂项目经验者优先"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充商业保险",
+    "年度体检",
+    "带薪年假",
+    "餐补、房补",
+    "免费三餐",
+    "丰富的技术沙龙",
+    "弹性工作制"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术初面",
+    "技术复试",
+    "交叉面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "陈 HR",
+    "email": "chen.hr@alibaba.com"
+  },
+  "postedAt": "2025-07-22",
+  "validUntil": "2025-08-22",
+  "status": "招聘中",
+  "views": 2410,
+  "applications": 187
+},
+      {
+  "id": 102,
+  "enterpriseId": 5003,
+  "title": "测试工程师",
+  "description": "负责系统测试、自动化测试脚本编写，保障产品质量，参与从需求评审到上线发布的全流程质量保证工作。",
+  "requiredSkills": ["Java", "Selenium", "JMeter", "Postman", "SQL", "Linux"],
+  "preferredSkills": ["Python", "Appium", "Jenkins", "CI/CD", "性能测试"],
+  "salary": "13k-20k",
+  "location": "深圳",
+  "workType": "全职",
+  "experience": "1-3年",
+  "education": "本科及以上",
+  "department": "质量保证部",
+  "reportTo": "测试主管",
+  "responsibilities": [
+    "根据需求文档编写测试用例和测试计划",
+    "执行功能测试、接口测试和回归测试",
+    "使用自动化工具（如Selenium）编写和维护自动化测试脚本",
+    "进行性能测试，分析测试结果并提出优化建议",
+    "跟踪并推动解决测试中发现的缺陷"
+  ],
+  "requirements": [
+    "计算机或相关专业本科及以上学历",
+    "1年以上软件测试经验，熟悉测试流程和方法",
+    "熟练使用主流测试工具，能独立完成功能测试",
+    "掌握至少一种编程语言（Java/Python），能编写自动化脚本",
+    "具备良好的沟通能力和责任心，注重细节"
+  ],
+  "benefits": [
+    "五险一金",
+    "补充公积金",
+    "年度体检",
+    "带薪年假",
+    "节日福利",
+    "员工宿舍",
+    "班车接送",
+    "专业技能培训"
+  ],
+  "recruitmentProcess": [
+    "简历筛选",
+    "技术笔试",
+    "技术面试",
+    "HR面试",
+    "发放Offer"
+  ],
+  "contact": {
+    "recruiterName": "李 HR",
+    "email": "li.hr@huawei.com"
+  },
+  "postedAt": "2025-07-20",
+  "validUntil": "2025-08-20",
+  "status": "招聘中",
+  "views": 1892,
+  "applications": 121
+}
+    ]
+  }
+],
   "students": [
     {
       "id": 1001,

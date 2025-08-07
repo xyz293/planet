@@ -16,8 +16,14 @@ export const getcompany = () => {
     '/company/page',
   )
 }
-export const getcompanydetail = (id:number) => {
-  return request.get(`/company/${id}`
+export const getcompanydetail = (enterpriseId:number) => {
+  return request.get('/enterprise-need/:enterpriseId',
+    {
+      params:{
+        enterpriseId
+      }
+    }
+
   )
 }
 export const getjobdetail = (id:number) => {

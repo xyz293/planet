@@ -30,7 +30,7 @@ const router =[
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><Student/></Suspense>
     },
     {
-      path:"/company/:id/:jobid",
+      path:"/company/:id",
 
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><DetailCompany/></Suspense>
     },
@@ -50,7 +50,7 @@ const router =[
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><Resourse/></Suspense>
     },
     {
-      path:'/studentdetail/:id/:jobId',
+      path:'/jobdetail/:id',
 
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><StudentJobDetail/></Suspense>
     }

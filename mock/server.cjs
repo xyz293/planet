@@ -512,42 +512,190 @@ server.get('/application/my', (req, res) => {
 server.get('/jobs', (req, res) => {
   try {
     const enterpriseId = Number(req.query.enterpriseId);
-    if (!enterpriseId) {
-      return res.status(400).json({ success: false, message: '缺少企业ID参数' });
+
+    if (!enterpriseId || isNaN(enterpriseId)) {
+      return res.status(400).json({ message: '缺少或无效的 enterpriseId' });
     }
 
+    // ✅ 正确方式：从 json-server 的 db 中获取 enterpriseNeeds
+    const db = router.db;
+    const enterpriseNeeds = db.get('enterpriseNeeds').value();
+
+    // 查找企业
     const company = enterpriseNeeds.find(item => item.enterpriseId === enterpriseId);
+
     if (!company) {
-      return res.json({ success: true, data: [] });
+      return res.status(404).json({ message: '企业未找到' });
     }
 
-    if (Array.isArray(company.jobDetails)) {
-      return res.json({ success: true, data: company.jobDetails });
-    } else if (company.jobDetail) {
-      return res.json({ success: true, data: [company.jobDetail] });
-    } else {
-      return res.json({ success: true, data: [] });
-    }
+    // 获取 jobDetails，确保是数组
+    const jobDetails = Array.isArray(company.jobDetails) ? company.jobDetails : [];
+
+    // ✅ 直接返回 jobDetails 数组
+    res.json(jobDetails);
+
   } catch (error) {
-    console.error('查询岗位出错:', error);
-    res.status(500).json({ success: false, message: '服务器错误' });
+    console.error('💥 /jobs 接口错误:', error.message);
+    res.status(500).json({ message: '服务器内部错误' });
+  }
+});
+// 接口2: 根据岗位 id 查询单个岗位详情
+// ✅ 接口1: 根据岗位 id 查询单个岗位详情
+server.get('/job/:id', (req, res) => {
+  try {
+    const jobId = Number(req.params.id);
+
+    if (isNaN(jobId)) {
+      return res.status(400).json({
+        success: false,
+        message: '无效的岗位ID'
+      });
+    }
+
+    // ✅ 从 json-server 数据库读取 enterpriseNeeds
+    const db = router.db;
+    const enterpriseNeeds = db.get('enterpriseNeeds').value();
+
+    // 扁平化所有 jobDetails 并查找
+    const job = enterpriseNeeds
+      .flatMap(company => company.jobDetails || [])
+      .find(j => j.id === jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: '岗位未找到'
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: job
+    });
+
+  } catch (error) {
+    console.error('💥 /job/:id 错误:', error.message);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误'
+    });
+  }
+});
+// 📈 学生查看岗位详情时，增加浏览量
+server.post('/job/:id/view', (req, res) => {
+  try {
+    const jobId = Number(req.params.id);
+
+    if (isNaN(jobId)) {
+      return res.status(400).json({
+        success: false,
+        message: '无效的岗位ID'
+      });
+    }
+
+    const db = router.db;
+
+    // 1️⃣ 从所有企业的 jobDetails 中查找该岗位
+    const enterpriseNeeds = db.get('enterpriseNeeds').value();
+    let targetJob = null;
+    let targetCompany = null;
+
+    for (const company of enterpriseNeeds) {
+      if (Array.isArray(company.jobDetails)) {
+        targetJob = company.jobDetails.find(j => j.id === jobId);
+        if (targetJob) {
+          targetCompany = company;
+          break;
+        }
+      }
+    }
+
+    if (!targetJob) {
+      return res.status(404).json({
+        success: false,
+        message: '岗位未找到'
+      });
+    }
+
+    // 2️⃣ 如果没有 views 字段，初始化为 0
+    if (typeof targetJob.views === 'undefined') {
+      targetJob.views = 0;
+    }
+
+    // 3️⃣ 浏览量 +1
+    targetJob.views += 1;
+
+    // 4️⃣ 找到该岗位在数组中的索引并更新
+    const jobIndex = targetCompany.jobDetails.findIndex(j => j.id === jobId);
+    targetCompany.jobDetails[jobIndex] = targetJob;
+
+    // 5️⃣ 更新企业数据
+    db.get('enterpriseNeeds')
+      .find({ id: targetCompany.id })
+      .assign(targetCompany)
+      .write();
+
+    // 6️⃣ 返回最新浏览量
+    return res.json({
+      success: true,
+      message: '浏览量已增加',
+      data: {
+        jobId: targetJob.id,
+        views: targetJob.views
+      }
+    });
+
+  } catch (error) {
+    console.error('记录浏览量失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '服务器内部错误'
+    });
   }
 });
 
+// ✅ 接口2: 查询某个职位收到的所有求职申请
+server.get('/job/:id/applications', (req, res) => {
+  try {
+    const jobId = Number(req.params.id);
+    if (isNaN(jobId)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '无效的职位ID' 
+      });
+    }
 
+    // ✅ 从数据库读取 applications
+    const db = router.db;
+    const applications = db.get('applications').value();
+    const users = db.get('users').value(); // 用于获取学生姓名等信息
 
+    // 过滤出该职位的申请
+    const jobApplications = applications.filter(app => app.jobId === jobId);
 
+    // 补充学生信息（姓名、电话等）
+    const result = jobApplications.map(app => {
+      const student = users.find(u => u.id === app.studentId);
+      return {
+        ...app,
+        studentName: student?.name || '未知',
+        studentPhone: student?.phone || '未知',
+        studentEmail: student?.email || '未知'
+      };
+    });
 
+    return res.json({
+      success: true,
+      data: result
+    });
 
-
-
-server.get('/job/:id', (req, res) => {
-  const jobId = Number(req.params.id);
-  const need = enterpriseNeeds.find(item => item.jobDetail.id === jobId);
-  if (!need) {
-    return res.status(404).json({ success: false, message: '职位不存在' });
+  } catch (error) {
+    console.error('💥 /job/:id/applications 错误:', error.message);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误'
+    });
   }
-  res.json({ success: true, data: need.jobDetail });
 });
 
 // 📂 企业查看收到的求职申请
@@ -802,17 +950,78 @@ server.get('/resources/:id', (req, res) => {
   res.json({ success: true, data: resource })
 })
 
-// 📌 获取单个企业详情
-server.get('/company/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const company = router.db.get('enterpriseNeeds').find({ id }).value()
+server.get('/enterprise-need/:id', (req, res) => {
+  try {
+    const enterpriseId = Number(req.params.id); // 路径参数转换为数字
 
-  if (!company) {
-    return res.status(404).json({ success: false, message: '企业不存在' })
+    if (!enterpriseId || isNaN(enterpriseId)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '无效的 enterpriseId' 
+      });
+    }
+
+    const db = router.db;
+
+    // 获取企业招聘需求（根据 enterpriseId）
+    const enterpriseNeed = db.get('enterpriseNeeds')
+      .find({ enterpriseId })
+      .value();
+
+    if (!enterpriseNeed) {
+      return res.status(404).json({ 
+        success: false, 
+        message: '未找到该企业的招聘需求' 
+      });
+    }
+
+    // 查找 jobDetail，如果未附带，则尝试根据 position 和 enterpriseId 查找
+    let jobDetail = enterpriseNeed.jobDetail;
+
+    if (!jobDetail) {
+      const job = db.get('jobs')
+        .find({ 
+          enterpriseId: enterpriseNeed.enterpriseId, 
+          title: enterpriseNeed.position  // position 与 title 必须匹配
+        })
+        .value();
+
+      if (job) {
+        const enterprise = db.get('users')
+          .find({ id: job.enterpriseId, role: 'enterprise' })
+          .value();
+
+        jobDetail = {
+          id: job.id,
+          enterpriseId: job.enterpriseId,
+          title: job.title,
+          description: job.description,
+          requiredSkills: job.requiredSkills,
+          salary: job.salary,
+          location: job.location,
+          company: enterprise?.name || null
+        };
+      }
+    }
+
+    const responseData = {
+      ...enterpriseNeed,
+      jobDetail
+    };
+
+    return res.json({ 
+      success: true, 
+      data: responseData 
+    });
+
+  } catch (error) {
+    console.error('查询企业详情失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
   }
-
-  res.json({ success: true, data: company })
-})
+});
 
 // ✅ 填写/更新个人信息接口
 server.put('/user/update', (req, res) => {

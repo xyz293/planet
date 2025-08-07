@@ -33,7 +33,8 @@ const items = [
  
 ].map((icon, index) => {
   const labels = [
-     '求职简历'
+     '岗位列表',
+
   ];
   return {
     key: String(index + 1),

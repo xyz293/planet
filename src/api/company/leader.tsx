@@ -48,10 +48,17 @@ export const getcompanyjob = async (id: number) => {
     url: '/jobs',  // 动态拼接路径参数
     method: 'get',
     params:{
-      enterpriseId:id
+    enterpriseId: id 
     }
   });
 }
+export const getjobdetail = async (id: number) => {
+  return request({
+    url: `/job/${id}`,
+    method: 'get',
+  });
+}
+
 
 
 

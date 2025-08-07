@@ -17,6 +17,8 @@ interface Job {
 
 interface Company {
   id: number
+  enterpriseId: number
+
   company: string
   location: string
   position: string
@@ -34,8 +36,8 @@ const Baseinfo = () => {
   const [showDetail, setShowDetail] = useState(true)
   const [showbutton, setShowbutton] = useState(false)
 
-  const getDetail = (id: number,jobid:number) => {
-    navigate(`/company/${id}/${jobid}`)
+  const getDetail = (id: number) => {
+    navigate(`/company/${id}`)
     console.log('查看公司详情，ID:', id)
   }
 
@@ -110,7 +112,7 @@ const Baseinfo = () => {
         {companies.map((item) => (
           <li
             key={item.id}
-            onClick={() => getDetail(item.id,item.jobDetail.id)}
+            onClick={() => getDetail(item.id)}
             style={{
               backgroundColor: '#fff',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -129,12 +131,6 @@ const Baseinfo = () => {
             <h2 style={{ marginBottom: 8, color: '#007acc' }}>{item.company}</h2>
             <p style={{ margin: '4px 0', color: '#555' }}>
               <strong>地点:</strong> {item.location}
-            </p>
-            <p style={{ margin: '4px 0', color: '#555' }}>
-              <strong>职位:</strong> {item.position}
-            </p>
-            <p style={{ margin: '4px 0', color: '#555' }}>
-              <strong>薪资:</strong> {item.salary}
             </p>
           </li>
         ))}
