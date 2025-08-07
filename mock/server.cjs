@@ -595,14 +595,14 @@ server.post('/job/:id/view', (req, res) => {
 
     const db = router.db;
 
-    // 1️⃣ 从所有企业的 jobDetails 中查找该岗位
     const enterpriseNeeds = db.get('enterpriseNeeds').value();
     let targetJob = null;
     let targetCompany = null;
 
     for (const company of enterpriseNeeds) {
       if (Array.isArray(company.jobDetails)) {
-        targetJob = company.jobDetails.find(j => j.id === jobId);
+        // 注意这里改成 jobId 比较
+        targetJob = company.jobDetails.find(j => j.jobId === jobId);
         if (targetJob) {
           targetCompany = company;
           break;
@@ -617,30 +617,25 @@ server.post('/job/:id/view', (req, res) => {
       });
     }
 
-    // 2️⃣ 如果没有 views 字段，初始化为 0
     if (typeof targetJob.views === 'undefined') {
       targetJob.views = 0;
     }
 
-    // 3️⃣ 浏览量 +1
     targetJob.views += 1;
 
-    // 4️⃣ 找到该岗位在数组中的索引并更新
-    const jobIndex = targetCompany.jobDetails.findIndex(j => j.id === jobId);
+    const jobIndex = targetCompany.jobDetails.findIndex(j => j.jobId === jobId);
     targetCompany.jobDetails[jobIndex] = targetJob;
 
-    // 5️⃣ 更新企业数据
     db.get('enterpriseNeeds')
       .find({ id: targetCompany.id })
       .assign(targetCompany)
       .write();
 
-    // 6️⃣ 返回最新浏览量
     return res.json({
       success: true,
       message: '浏览量已增加',
       data: {
-        jobId: targetJob.id,
+        jobId: targetJob.jobId,
         views: targetJob.views
       }
     });
@@ -653,6 +648,7 @@ server.post('/job/:id/view', (req, res) => {
     });
   }
 });
+
 
 // ✅ 接口2: 查询某个职位收到的所有求职申请
 server.get('/job/:id/applications', (req, res) => {

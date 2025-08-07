@@ -1,66 +1,149 @@
-.detail-company {
-  max-width: 800px;
+.job-detail-container {
+  max-width: 960px;
   margin: 40px auto;
-  padding: 30px;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  line-height: 1.7;
+  padding: 20px;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
   color: #333;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 
-  .loading, .error {
+  .main-title {
     text-align: center;
-    padding: 60px 20px;
-    font-size: 18px;
-    color: #888;
+    font-size: 36px;
+    margin-bottom: 48px;
+    color: #1e1e1e;
+    font-weight: 700;
+    letter-spacing: 1px;
   }
 
-  .error {
-    color: #d32f2f;
-  }
+  .job-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 36px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
 
-  h2 {
-    color: #1976d2;
-    margin-bottom: 16px;
-    font-size: 24px;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 8px;
-  }
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
 
-  .company-section, .job-section {
-    margin-bottom: 40px;
-  }
-
-  .company-name {
-    color: #2e7d32;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-
-    li {
-      margin: 8px 0;
-      padding: 6px 0;
-      border-bottom: 1px dashed #ddd;
-      font-size: 15px;
+      .job-card-content {
+        opacity: 1;
+        max-height: 1500px; /* 足够大以容纳所有内容 */
+        transition: all 0.5s ease;
+      }
     }
-  }
 
-  .job-description {
-    background: #f9f9f9;
-    padding: 16px;
-    border-radius: 8px;
-    margin: 16px 0;
-    font-size: 15px;
-    white-space: pre-wrap;
-  }
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
 
-  .no-data {
-    text-align: center;
-    color: #999;
-    font-style: italic;
+      h2 {
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #1a1a1a;
+      }
+
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        .tag {
+          background: #f4f6f8;
+          color: #555;
+          padding: 6px 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          transition: background 0.3s;
+
+          &:hover {
+            background: #e0e0e0;
+          }
+
+          &.tag-salary {
+            background-color: #fff3e0;
+            color: #e65100;
+            font-weight: bold;
+          }
+        }
+      }
+
+      .job-stats {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+
+        .status {
+          font-size: 14px;
+          color: #28a745;
+          font-weight: 600;
+        }
+
+        .views,
+        .applications {
+          font-size: 12px;
+          color: #aaa;
+        }
+      }
+    }
+
+    .job-card-content {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .meta-block {
+      font-size: 15px;
+      margin-bottom: 24px;
+      color: #444;
+
+      p {
+        margin-bottom: 8px;
+      }
+    }
+
+    .job-section {
+      margin-bottom: 28px;
+
+      h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+        color: #222;
+        font-weight: 600;
+      }
+
+      ul {
+        padding-left: 22px;
+
+        li {
+          list-style: disc;
+          margin-bottom: 6px;
+          line-height: 1.6;
+        }
+      }
+
+      p {
+        line-height: 1.7;
+        color: #555;
+      }
+    }
+
+    .contact {
+      border-top: 1px solid #e6e6e6;
+      padding-top: 20px;
+      margin-top: 24px;
+      font-size: 14px;
+      color: #666;
+    }
   }
 }

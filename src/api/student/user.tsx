@@ -95,7 +95,7 @@ export const myapply =  (id:number) => {
     url: '/application/my',
     method: 'get',
     params: {
-      id
+      id:id
     }
 
   })

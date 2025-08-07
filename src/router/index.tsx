@@ -10,7 +10,9 @@ const College = lazy(()=>import("../page/college/base-college"))
 const Company = lazy(()=>import("../page/company/base-company"))
 const DetailCollege = lazy(()=>import("../page/student/college/detail-college"))
 const Resourse = lazy(()=>import("../page/student/college/detail-page"))
-const StudentJobDetail = lazy(()=>import("../page/company/compment/student-job-detail"))
+const StudentJobDetail = lazy(()=>import("../page/company/compment/job-detail"))
+const StudentDetail = lazy(()=>import("../page/company/compment/student-detail"))
+
 
 const router =[
     {
@@ -53,6 +55,11 @@ const router =[
       path:'/jobdetail/:id',
 
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><StudentJobDetail/></Suspense>
+    },
+    {
+      path:'/studentdetail/:id',
+      element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><StudentDetail/></Suspense>
+
     }
 ]
 export default router

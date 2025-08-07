@@ -58,6 +58,12 @@ export const getjobdetail = async (id: number) => {
     method: 'get',
   });
 }
+export const jobs = async (id: number) => {
+  return request({
+    url: `/job/${id}/applications`,
+    method: 'get',
+  });
+}
 
 
 

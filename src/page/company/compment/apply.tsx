@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface ReceivedApplication {
   location: string;
-  id: number;
+  jobId: number;
   postedAt: string;
   salary: string;
   status: string;
@@ -38,9 +38,9 @@ const JobSeekerList = () => {
     <div style={styles.container}>
       {candidates.map((item) => (
         <div
-          key={item.id}
+          key={item.jobId}
           style={styles.card}
-          onClick={() => getdetail(item.id)}
+          onClick={() => getdetail(item.jobId)}
         >
           <h3 style={styles.title}>{item.title}</h3>
           <div style={styles.infoRow}>

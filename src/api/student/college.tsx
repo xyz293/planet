@@ -35,3 +35,6 @@ export const resourse =(id:number)=>{
     return request.get(`/resources/${id}`,{
     })
 }
+export const  getviews =(id:number)=>{
+    return request.post(`/job/${id}/view`)
+}
