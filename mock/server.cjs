@@ -648,6 +648,561 @@ server.post('/job/:id/view', (req, res) => {
     });
   }
 });
+// 🛰️ 聊天系统 API
+
+// 生成唯一 ID（简单版）
+const generateChatId = () => (Date.now() % 1000000000).toString();
+
+// 获取会话 ID（conv_studentId_enterpriseId）
+const getConversationId = (studentId, enterpriseId) => `conv_${studentId}_${enterpriseId}`;
+
+// 🔹 1. 获取当前用户的聊天会话列表
+server.get('/api/chat/student/:studentId/conversations', (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const db = router.db;
+
+    const sid = Number(studentId);
+    if (isNaN(sid)) {
+      return res.status(400).json({
+        success: false,
+        message: 'studentId 必须是有效数字'
+      });
+    }
+
+    // 1. 检查学生是否存在
+    const student = db.get('users').find({ id: sid, role: 'student' }).value();
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: '学生用户不存在'
+      });
+    }
+
+    // 2. 找出该学生参与的所有会话
+    const conversations = db.get('chatConversations')
+      .filter({ studentId: sid })
+      .value()
+      .sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+
+    // 3. 补充每个会话对应的企业信息
+    const result = conversations.map(conv => {
+      const enterprise = db.get('enterprises').find({ id: conv.enterpriseId }).value();
+
+      return {
+        ...conv,
+        enterprise: enterprise
+          ? {
+              id: enterprise.id,
+              name: enterprise.name || '未知企业',
+              logo: enterprise.logo || null
+            }
+          : {
+              id: null,
+              name: '已删除企业',
+              logo: null
+            }
+      };
+    });
+
+    res.json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    console.error('【服务器错误】查询学生会话失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误，请稍后重试',
+      error: error.message
+    });
+  }
+});
+
+// 🔹 2. 获取某个会话的消息记录
+server.get('/api/chat/conversations/:id/messages', (req, res) => {
+  try {
+    const { id: conversationId } = req.params;
+    const { studentId, enterpriseId } = req.query; // 也可以用 req.body（需配合中间件解析）
+
+    const db = router.db;
+
+    // 1. 校验参数是否齐全且为数字
+    if (!conversationId || !studentId || !enterpriseId) {
+      return res.status(400).json({
+        success: false,
+        message: '缺少 conversationId、studentId 或 enterpriseId'
+      });
+    }
+
+    const sid = Number(studentId);
+    const eid = Number(enterpriseId);
+
+    if (isNaN(sid) || isNaN(eid)) {
+      return res.status(400).json({
+        success: false,
+        message: 'studentId 和 enterpriseId 必须是有效的数字'
+      });
+    }
+
+    // 2. 查找会话
+    const conversation = db.get('chatConversations').find({ id: conversationId }).value();
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: '会话不存在'
+      });
+    }
+
+    // 3. 显式校验：传入的 studentId 和 enterpriseId 是否与会话匹配
+    if (conversation.studentId !== sid || conversation.enterpriseId !== eid) {
+      return res.status(403).json({
+        success: false,
+        message: '提供的 studentId 或 enterpriseId 与会话不匹配'
+      });
+    }
+
+    // 4. 查询该会话的所有消息（按时间升序）
+    const messages = db.get('chatMessages')
+      .filter({ conversationId })
+      .orderBy('timestamp', 'asc')
+      .value();
+
+    // 5. 补充发送者姓名
+    const enrichedMessages = messages.map(msg => {
+      const sender = msg.senderType === 'student'
+        ? db.get('students').find({ id: msg.senderId }).value()
+        : db.get('enterprises').find({ id: msg.senderId }).value();
+
+      return {
+        ...msg,
+        senderName: sender?.name || '未知用户'
+      };
+    });
+
+    // 6. 返回成功
+    res.json({
+      success: true,
+      data: enrichedMessages
+    });
+
+  } catch (error) {
+    console.error('【服务器错误】获取消息失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误，请稍后重试'
+    });
+  }
+});
+
+// 🔹 3. 发送消息
+// POST /api/chat/messages
+server.post('/api/chat/messages', (req, res) => {
+  try {
+    const { studentId, enterpriseId, content, sender } = req.body;
+    const db = router.db;
+
+    // 1. 校验必要参数
+    if (!studentId || !enterpriseId || !content || !sender) {
+      return res.status(400).json({
+        success: false,
+        message: '缺少 studentId、enterpriseId、content 或 sender'
+      });
+    }
+
+    if (!['student', 'enterprise'].includes(sender)) {
+      return res.status(400).json({
+        success: false,
+        message: 'sender 必须是 "student" 或 "enterprise"'
+      });
+    }
+
+    const sid = Number(studentId);
+    const eid = Number(enterpriseId);
+
+    if (isNaN(sid) || isNaN(eid)) {
+      return res.status(400).json({
+        success: false,
+        message: 'studentId 和 enterpriseId 必须是数字'
+      });
+    }
+
+    if (content.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: '消息内容不能为空'
+      });
+    }
+
+    // 2. 检查用户是否存在
+    const student = db.get('users').find({ id: sid, role: 'student' }).value();
+    const enterprise = db.get('users').find({ id: eid, role: 'enterprise' }).value();
+
+    if (!student || !enterprise) {
+      return res.status(400).json({
+        success: false,
+        message: '学生或企业用户不存在'
+      });
+    }
+
+    // 3. 自动生成 conversationId（顺序固定：conv_学生ID_企业ID）
+    const conversationId = `conv_${sid}_${eid}`;
+
+    // 4. 查找会话（是否已存在）
+    let conversation = db.get('chatConversations').find({ id: conversationId }).value();
+
+    if (!conversation) {
+      // 创建新会话
+      conversation = {
+        id: conversationId,
+        studentId: sid,
+        enterpriseId: eid,
+        lastMessage: '',
+        lastMessageTime: new Date().toISOString(),
+        unreadCount: 0,
+        status: 'active',
+        createdAt: new Date().toISOString()
+      };
+      db.get('chatConversations').push(conversation).write();
+    }
+
+    // 5. 判断发送者
+    let senderType, senderId;
+
+    if (sender === 'student') {
+      senderType = 'student';
+      senderId = sid;
+    } else if (sender === 'enterprise') {
+      senderType = 'enterprise';
+      senderId = eid;
+    }
+
+    // 🔒 权限校验：确保当前 sender 确实是会话的一方
+    if (
+      (senderType === 'student' && senderId !== conversation.studentId) ||
+      (senderType === 'enterprise' && senderId !== conversation.enterpriseId)
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: '无权发送消息：身份与会话不匹配'
+      });
+    }
+
+    // 6. 创建消息（显式包含 studentId 和 enterpriseId）
+    const message = {
+      id: generateChatId(),
+      conversationId,
+      studentId: sid,           // 👈 显式添加，方便前端使用
+      enterpriseId: eid,        // 👈 显式添加
+      senderType,
+      senderId,
+      content: content.trim(),
+      type: 'text',
+      status: 'sent',
+      timestamp: new Date().toISOString()
+    };
+
+    // 保存消息
+    db.get('chatMessages').push(message).write();
+
+    // 7. 更新会话信息
+    // 规则：学生发消息 → 企业未读数 +1；企业发消息 → 未读数清零
+    const finalUnreadCount = senderType === 'student'
+      ? conversation.unreadCount + 1
+      : 0;
+
+    db.get('chatConversations')
+      .find({ id: conversationId })
+      .assign({
+        lastMessage: message.content,
+        lastMessageTime: message.timestamp,
+        unreadCount: finalUnreadCount
+      })
+      .write();
+
+    // 8. 强制同步保存数据库文件（适用于 lowdb 文件存储）
+    try {
+      fs.writeFileSync(dbFilePath, JSON.stringify(db.getState(), null, 2));
+    } catch (err) {
+      console.error('持久化失败:', err);
+      // 即使写文件失败，消息已写入内存，可降级返回
+    }
+
+    // 9. 返回成功响应
+    res.status(201).json({
+      success: true,
+      data: message  // 包含 studentId, enterpriseId, senderId 等
+    });
+
+  } catch (error) {
+    console.error('【服务器错误】发送消息失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '消息发送失败，请稍后重试',
+      error: error.message
+    });
+  }
+});
+// 假设在你的 server 路由文件中添加如下代码
+server.post('/api/chat/mark-as-read', (req, res) => {
+  try {
+    const { conversationId, studentId } = req.body;
+    const db = router.db; // 假设 db 已正确挂载
+
+    // 1. 校验必要参数
+    if (!conversationId || !studentId) {
+      return res.status(400).json({
+        success: false,
+        message: '缺少 conversationId 或 studentId'
+      });
+    }
+
+    const sid = Number(studentId);
+    if (isNaN(sid)) {
+      return res.status(400).json({
+        success: false,
+        message: 'studentId 必须是数字'
+      });
+    }
+
+    // 2. 查找会话
+    const conversation = db.get('chatConversations').find({ id: conversationId }).value();
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: '会话不存在'
+      });
+    }
+
+    // 3. 权限校验：当前 studentId 是否是该会话的学生
+    if (conversation.studentId !== sid) {
+      return res.status(403).json({
+        success: false,
+        message: '无权操作：该会话不属于该学生'
+      });
+    }
+
+    // 4. 更新未读数为 0
+    db.get('chatConversations')
+      .find({ id: conversationId })
+      .assign({
+        unreadCount: 0
+      })
+      .write();
+
+    // 可选：持久化到文件（如果使用 lowdb 文件存储）
+    try {
+      fs.writeFileSync(dbFilePath, JSON.stringify(db.getState(), null, 2));
+    } catch (err) {
+      console.error('持久化失败:', err);
+    }
+
+    // 5. 返回成功
+    res.status(200).json({
+      success: true,
+      message: '已标记为已读',
+      data: {
+        conversationId,
+        unreadCount: 0
+      }
+    });
+
+  } catch (error) {
+    console.error('【服务器错误】标记已读失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误，请稍后重试',
+      error: error.message
+    });
+  }
+});
+// 🔹 4. 标记消息为已读
+server.put('/api/chat/messages/read', verifyToken, (req, res) => {
+  const { conversationId } = req.body;
+  const db = router.db;
+
+  if (!conversationId) {
+    return res.status(400).json({ success: false, message: '缺少 conversationId' });
+  }
+
+  const userId = req.user.id;
+  const user = db.get('users').find({ id: userId }).value();
+  if (!user || user.role !== 'student') {
+    return res.status(403).json({ success: false, message: '仅学生可标记已读' });
+  }
+
+  const conversation = db.get('chatConversations').find({ id: conversationId }).value();
+  if (!conversation || conversation.studentId !== userId) {
+    return res.status(403).json({ success: false, message: '无权操作此会话' });
+  }
+
+  // 将该会话中所有企业发送的消息标记为 read
+  db.get('chatMessages')
+    .filter(m => m.conversationId === conversationId && m.senderType === 'enterprise')
+    .forEach(m => {
+      m.status = 'read';
+    })
+    .write();
+
+  // 清空未读数
+  db.get('chatConversations')
+    .find({ id: conversationId })
+    .assign({ unreadCount: 0 })
+    .write();
+
+  fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+  res.json({ success: true, message: '消息已标记为已读' });
+});
+
+server.post('/api/chat/start', verifyToken, (req, res) => {
+  const { enterpriseId, studentId, message } = req.body;
+  const db = router.db;
+  const userId = req.user.id;
+  const user = db.get('users').find({ id: userId }).value();
+
+  if (!user) return res.status(404).json({ success: false, message: '用户不存在' });
+  if (!message) return res.status(400).json({ success: false, message: '消息内容不能为空' });
+
+  let targetId, conversationId, isStudent;
+
+  if (user.role === 'student') {
+    if (!enterpriseId) return res.status(400).json({ success: false, message: '缺少企业ID' });
+    isStudent = true;
+    targetId = enterpriseId;
+    conversationId = `conv_${userId}_${enterpriseId}`;
+  } else if (user.role === 'enterprise') {
+    if (!studentId) return res.status(400).json({ success: false, message: '缺少学生ID' });
+    isStudent = false;
+    targetId = studentId;
+    conversationId = `conv_${studentId}_${userId}`;
+  } else {
+    return res.status(403).json({ success: false, message: '不支持的身份' });
+  }
+
+  // 检查会话是否存在
+  let conversation = db.get('chatConversations').find({ id: conversationId }).value();
+
+  if (!conversation) {
+    conversation = {
+      id: conversationId,
+      studentId: isStudent ? userId : targetId,
+      enterpriseId: isStudent ? targetId : userId,
+      lastMessage: '',
+      lastMessageTime: new Date().toISOString(),
+      unreadCount: isStudent ? 0 : 1,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    };
+    db.get('chatConversations').push(conversation).write();
+  }
+
+  // 发送首条消息
+  const msgId = (Date.now() % 1000000000).toString();
+  const newMessage = {
+    id: msgId,
+    conversationId,
+    senderType: user.role === 'student' ? 'student' : 'enterprise',
+    senderId: userId,
+    content: message.trim(),
+    type: 'text',
+    status: 'sent',
+    timestamp: new Date().toISOString()
+  };
+
+  db.get('chatMessages').push(newMessage).write();
+
+  // 更新会话
+  db.get('chatConversations')
+    .find({ id: conversationId })
+    .assign({
+      lastMessage: newMessage.content,
+      lastMessageTime: newMessage.timestamp,
+      unreadCount: isStudent ? 0 : (conversation.unreadCount || 0) + 1
+    })
+    .write();
+
+  fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+  res.status(201).json({
+    success: true,
+    data: {
+      conversationId,
+      messageId: msgId
+    }
+  });
+});
+// DELETE /api/chat/messages/:id
+
+server.delete('/api/chat/messages/:id', verifyToken, (req, res) => {
+  const msgId = req.params.id;
+  const db = router.db;
+  const userId = req.user.id;
+
+  const message = db.get('chatMessages').find({ id: msgId }).value();
+  if (!message) return res.status(404).json({ success: false, message: '消息不存在' });
+
+  if (message.senderId !== userId) {
+    return res.status(403).json({ success: false, message: '不能撤回他人消息' });
+  }
+
+  const now = new Date();
+  const sentTime = new Date(message.timestamp);
+  if (now - sentTime > 2 * 60 * 1000) {
+    return res.status(400).json({ success: false, message: '超过2分钟无法撤回' });
+  }
+
+  db.get('chatMessages').remove({ id: msgId }).write();
+  db.get('chatConversations')
+    .find({ id: message.conversationId })
+    .assign({
+      lastMessage: '(一条消息被撤回)',
+      lastMessageTime: now.toISOString()
+    })
+    .write();
+
+  fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+  res.json({ success: true, message: '消息已撤回' });
+});
+
+// 🔹 5. 获取未读消息总数
+server.get('/api/chat/unread-count', verifyToken, (req, res) => {
+  const db = router.db;
+  const userId = req.user.id;
+  const user = db.get('users').find({ id: userId }).value();
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: '用户不存在' });
+  }
+
+  let totalCount = 0;
+  let byEnterprise = [];
+
+  if (user.role === 'student') {
+    const conversations = db.get('chatConversations')
+      .filter({ studentId: userId })
+      .value();
+
+    totalCount = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+
+    byEnterprise = conversations
+      .filter(c => c.unreadCount > 0)
+      .map(c => {
+        const ent = db.get('enterprises').find({ id: c.enterpriseId }).value();
+        return {
+          enterpriseId: c.enterpriseId,
+          enterpriseName: ent?.name || '未知企业',
+          count: c.unreadCount
+        };
+      });
+  }
+
+  res.json({ success: true, data: { totalCount, byEnterprise } });
+});
 
 
 // ✅ 接口2: 查询某个职位收到的所有求职申请

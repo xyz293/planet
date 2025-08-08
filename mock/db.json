@@ -225,7 +225,7 @@
           "postedAt": "2025-07-22",
           "validUntil": "2025-08-22",
           "status": "招聘中",
-          "views": 1995,
+          "views": 1997,
           "applications": 134
         },
         {
@@ -296,7 +296,7 @@
           "postedAt": "2025-07-22",
           "validUntil": "2025-08-22",
           "status": "招聘中",
-          "views": 1990,
+          "views": 1991,
           "applications": 134
         }
       ]
@@ -766,14 +766,14 @@
       "id": 1003,
       "studentId": 1001,
       "jobId": 103,
-      "status": "待处理",
+      "status": "发起面试",
       "timestamp": "2025-08-07T11:36:16.775Z"
     },
     {
       "id": 1004,
       "studentId": 1001,
       "jobId": 102,
-      "status": "待处理",
+      "status": "发起面试",
       "timestamp": "2025-08-07T11:36:18.557Z"
     }
   ],
@@ -927,6 +927,66 @@
         "编程"
       ],
       "advice": "多练习实际建模项目，建议参加数学建模竞赛提升应用能力。"
+    }
+  ],
+  "chatConversations": [
+    {
+      "id": "conv_1001_5002",
+      "studentId": 1001,
+      "enterpriseId": 5002,
+      "lastMessage": "你好，张三，我们看了你的简历，对你的技能很感兴趣...",
+      "lastMessageTime": "2025-08-07T13:20:00Z",
+      "unreadCount": 1,
+      "status": "active",
+      "createdAt": "2025-08-07T13:20:00Z"
+    },
+    {
+      "id": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "lastMessage": "什么时候进行面试",
+      "lastMessageTime": "2025-08-08T15:42:57.638Z",
+      "unreadCount": 1,
+      "status": "active",
+      "createdAt": "2025-08-08T14:27:29.811Z"
+    }
+  ],
+  "chatMessages": [
+    {
+      "id": "664883977",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "enterprise",
+      "senderId": 5003,
+      "content": "你最近有时间来参加我们这的面试吗",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-08T14:54:43.977Z"
+    },
+    {
+      "id": "664899677",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "enterprise",
+      "senderId": 5003,
+      "content": "你最近有时间来参加我们这的面试吗",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-08T14:54:59.677Z"
+    },
+    {
+      "id": "667777638",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "什么时候进行面试",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-08T15:42:57.638Z"
     }
   ],
   "universities": [
