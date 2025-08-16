@@ -7,6 +7,7 @@ interface ApplicationWithStudentInfo {
   status: string;
   studentEmail: string;
   studentId: number;
+  id:number
   studentName: string;
   studentPhone: string;
   timestamp: string;
@@ -27,6 +28,7 @@ const StudentJobDetail = () => {
   const fetchApplications = async () => {
     try {
       const res = await jobs(Number(id));
+      console.log(res)
       setApplications(res.data.data);
     } catch (error) {
       console.error('获取投递详情失败:', error);
@@ -65,7 +67,7 @@ const StudentJobDetail = () => {
           </div>
           <div style={styles.footer}>
             <span>申请时间：{new Date(app.timestamp).toLocaleString()}</span>
-           <button onClick={()=>navigate(`/studentdetail/${app.studentId}`)} style={{ marginLeft: '500px' }}>查看详情</button>
+           <button onClick={()=>navigate(`/studentdetail/${app.studentId}/${app.id}`)} style={{ marginLeft: '500px' }}>查看详情</button>
 
 
           </div>

@@ -64,6 +64,27 @@ export const jobs = async (id: number) => {
     method: 'get',
   });
 }
+export const sendmessage = async (studnetid:number,enterid:number,contest:string,sender:string) => {
+
+  return request({
+    url: `/api/chat/messages`,
+    method: 'post',
+    data: {
+      studentId: studnetid,
+      enterpriseId: enterid,
+      content: contest,
+      sender:sender,
+
+    }
+  })
+}
+export const getconserversation = (enterpriseId:number) => {
+  return request({
+    url: `/api/chat/enterprise/${enterpriseId}/conversations`,
+    method: 'get',
+  })
+}
+
 
 
 

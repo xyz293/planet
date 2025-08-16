@@ -59,6 +59,135 @@ server.get('/user/sendCode', (req, res) => {
 
   res.json({ success: true, message: '验证码发送成功', code })
 })
+server.post('/enrollment',  (req, res) => {
+  try {
+    const { studentId, courseId } = req.body;
+
+    // 身份验证：必须是学生
+    const user = router.db.get('users').find({ id: req.user.id, role: 'student' }).value();
+    if (!user) {
+      return res.status(403).json({ success: false, message: '仅限学生操作' });
+    }
+
+    // 参数校验
+    if (!studentId || !courseId) {
+      return res.status(400).json({ success: false, message: '缺少 studentId 或 courseId' });
+    }
+
+    // 确保为本人选课
+    if (studentId !== user.id) {
+      return res.status(403).json({ success: false, message: '禁止为他人选课' });
+    }
+
+    // 检查学生和课程是否存在
+    const student = router.db.get('users').find({ id: studentId, role: 'student' }).value();
+    const course = router.db.get('courses').find({ id: Number(courseId) }).value();
+
+    if (!student) return res.status(404).json({ success: false, message: '学生不存在' });
+    if (!course) return res.status(404).json({ success: false, message: '课程不存在' });
+
+    // 检查是否已选
+    const existing = router.db.get('enrollments')
+      .find({ studentId, courseId: Number(courseId) })
+      .value();
+    if (existing) {
+      return res.status(400).json({ success: false, message: '您已选过该课程' });
+    }
+
+    // 创建新记录
+    const newEnrollment = {
+      id: generateId(),
+      studentId,
+      courseId: Number(courseId),
+      status: 'enrolled',
+      enrollTime: new Date().toISOString(),
+    };
+
+    // 写入数据库
+    router.db.get('enrollments').push(newEnrollment).write();
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+    res.status(201).json({
+      success: true,
+      message: '选课成功',
+       newEnrollment
+    });
+  } catch (error) {
+    console.error('选课失败:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+server.delete('/enrollment/:id',  (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const enrollment = router.db.get('enrollments').find({ id }).value();
+
+    if (!enrollment) {
+      return res.status(404).json({ success: false, message: '选课记录不存在' });
+    }
+
+    const user = router.db.get('users').find({ id: req.user.id, role: 'student' }).value();
+    if (!user || enrollment.studentId !== user.id) {
+      return res.status(403).json({ success: false, message: '无权操作' });
+    }
+
+    router.db.get('enrollments').remove({ id }).write();
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+    res.json({ success: true, message: '已取消选课' });
+  } catch (error) {
+    console.error('取消选课失败:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+server.get('/enrollment/my',  (req, res) => {
+  try {
+    const user = router.db.get('users').find({ id: req.user.id, role: 'student' }).value();
+    if (!user) return res.status(403).json({ success: false, message: '仅限学生访问' });
+
+    const enrollments = router.db.get('enrollments')
+      .filter({ studentId: user.id })
+      .map(enrollment => {
+        const course = router.db.get('courses').find({ id: enrollment.courseId }).value();
+        return course ? { ...enrollment, course } : enrollment;
+      })
+      .value();
+
+    res.json({
+      success: true,
+      message: '获取选课列表成功',
+      data: enrollments
+    });
+  } catch (error) {
+    console.error('获取选课列表失败:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+server.get('/enrollment/available',  (req, res) => {
+  try {
+    const user = router.db.get('users').find({ id: req.user.id, role: 'student' }).value();
+    if (!user) return res.status(403).json({ success: false, message: '仅限学生访问' });
+
+    const enrolledCourseIds = router.db.get('enrollments')
+      .filter({ studentId: user.id })
+      .map(e => e.courseId)
+      .value();
+
+    const availableCourses = router.db.get('courses')
+      .filter(course => !enrolledCourseIds.includes(course.id))
+      .value();
+
+    res.json({
+      success: true,
+      message: '可选课程获取成功',
+       availableCourses
+    });
+  } catch (error) {
+    console.error('获取可选课程失败:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+
 
 // 注册接口
 server.post('/user/regist', (req, res) => {
@@ -135,8 +264,155 @@ server.post('/user/login', (req, res) => {
   const token = createToken({ id: user.id, phone: user.phone })
   res.json({ success: true, message: '登录成功', user, token })
 })
+server.get('/course/my-status', (req, res) => {
+  const userIdRaw = req.query.userId;
+  if (!userIdRaw) {
+    return res.status(400).json({ success: false, message: '缺少用户ID' });
+  }
+  const userId = Number(userIdRaw);
+  if (isNaN(userId)) {
+    return res.status(400).json({ success: false, message: '用户ID格式错误' });
+  }
+
+  const user = router.db.get('users').find({ id: userId }).value();
+  if (!user || user.role !== 'student') {
+    return res.status(404).json({ success: false, message: '用户不存在或非学生' });
+  }
+
+  // 获取该学生的选课记录（包含未完成的）
+  const enrollments = router.db.get('enrollments')
+    .filter({ userId })
+    .value();
+
+  const courses = router.db.get('courses').value();
+  const courseMap = new Map(courses.map(c => [c.id, c]));
+
+  const result = enrollments.map(enroll => {
+    const course = courseMap.get(enroll.courseId);
+    if (!course) {
+      return null;
+    }
+
+    const passed = enroll.grade !== null && enroll.grade >= 60;
+    const creditsEarned = enroll.status === 'completed' && passed ? course.credits : 0;
+
+    return {
+      courseId: course.id,
+      courseCode: course.courseCode,
+      name: course.name,
+      department: course.department,
+      teacher: course.teacher,
+      credits: course.credits,
+      schedule: course.schedule,
+      location: course.location,
+
+      enrollmentStatus: enroll.status,         // enrolled / completed
+      grade: enroll.grade,                     // null 表示未出成绩
+      passed: enroll.grade !== null ? passed : null,
+      creditsEarned,
+
+      // 新增状态标签（前端友好）
+      statusText: enroll.status === 'completed' 
+        ? (passed ? '已通过，学分已获得' : '未通过，需重修') 
+        : '学习中，成绩未出'
+    };
+  }).filter(Boolean); // 过滤无效课程
+
+  res.json({
+    success: true,
+    data: {
+      userId: user.id,
+      name: user.name,
+      courseCount: result.length,
+      completedCount: result.filter(c => c.enrollmentStatus === 'completed').length,
+      passedCount: result.filter(c => c.passed === true).length,
+      totalCreditsEarned: result.reduce((sum, c) => sum + c.creditsEarned, 0),
+      courses: result
+    }
+  });
+});
+server.get('/course/:id/my', (req, res) => {
+  const userIdRaw = req.query.userId;
+  const courseIdRaw = req.params.id;
+
+  if (!userIdRaw) {
+    return res.status(400).json({ success: false, message: '缺少用户ID' });
+  }
+  if (!courseIdRaw) {
+    return res.status(400).json({ success: false, message: '缺少课程ID' });
+  }
+
+  const userId = Number(userIdRaw);
+  const courseId = Number(courseIdRaw);
+
+  if (isNaN(userId) || isNaN(courseId)) {
+    return res.status(400).json({ success: false, message: '参数格式错误' });
+  }
+
+  const user = router.db.get('users').find({ id: userId }).value();
+  if (!user || user.role !== 'student') {
+    return res.status(404).json({ success: false, message: '用户不存在或非学生' });
+  }
+
+  // 查找该学生对该课程的选课记录
+  const enrollment = router.db.get('enrollments')
+    .find({ userId, courseId })
+    .value();
+
+  const course = router.db.get('courses').find({ id: courseId }).value();
+  if (!course) {
+    return res.status(404).json({ success: false, message: '课程不存在' });
+  }
+
+  let statusInfo = null;
+
+  if (enrollment) {
+    const passed = enrollment.grade !== null && enrollment.grade >= 60;
+    const creditsEarned = enrollment.status === 'completed' && passed ? course.credits : 0;
+
+    statusInfo = {
+      enrolled: true,
+      enrollmentId: enrollment.id,
+      enrollmentStatus: enrollment.status,
+      grade: enrollment.grade,
+      passed: enrollment.grade !== null ? passed : null,
+      creditsEarned,
+      statusText: enrollment.status === 'completed'
+        ? (passed ? '✅ 已通过，学分已获得' : '❌ 未通过，需重修')
+        : '🟡 学习中，成绩尚未发布',
+      semester: enrollment.semester
+    };
+  } else {
+    statusInfo = {
+      enrolled: false,
+      grade: null,
+      passed: false,
+      creditsEarned: 0,
+      statusText: '📘 未选修该课程'
+    };
+  }
+
+  res.json({
+    success: true,
+    data: {
+      course: {
+        id: course.id,
+        courseCode: course.courseCode,
+        name: course.name,
+        department: course.department,
+        teacher: course.teacher,
+        credits: course.credits,
+        schedule: course.schedule,
+        location: course.location,
+        description: course.description
+      },
+      myStatus: statusInfo
+    }
+  });
+});
 
 // 获取用户信息接口
+// 修改您现有的 /user/info 接口
 server.get('/user/info', (req, res) => {
   const userIdRaw = req.query.id
   if (!userIdRaw) {
@@ -151,12 +427,220 @@ server.get('/user/info', (req, res) => {
   if (!user) {
     return res.status(404).json({ success: false, message: '用户不存在' })
   }
-  const { id, phone, name, age, education, major, university, role } = user
+
+  // 👇 为学生角色添加学业信息
+  let studentInfo = {};
+  if (user.role === 'student') {
+    // 默认毕业所需学分，也可以存储在数据库里
+    const requiredCredits = user.requiredCredits || 120; 
+    // 计算毕业状态
+    const isGraduated = user.credits >= requiredCredits && user.tuitionPaid === true;
+
+    studentInfo = {
+      credits: user.credits || 0,           // 已获学分
+      requiredCredits,                      // 毕业所需学分
+      tuition: user.tuition || 0,           // 学费总额
+      tuitionPaid: user.tuitionPaid || false, // 学费是否缴清
+      graduationEligible: isGraduated      // 是否满足毕业资格
+    };
+  }
+
+  // 👇 将学业信息合并到返回数据中
+  const { id, phone, name, age, education, major, university, role } = user;
   res.json({
     success: true,
-    data: { id, phone, name, age, education, major, university, role }
+    data: { 
+      id, 
+      phone, 
+      name, 
+      age, 
+      education, 
+      major, 
+      university, 
+      role,
+      ...studentInfo // 学生专属信息
+    }
   })
 })
+// 新增接口：学生缴纳学费
+server.post('/payment/tuition', (req, res) => {
+  try {
+    const { user } = req; // 从 verifyToken 中间件获取的用户信息
+
+    // 1️⃣ 身份验证：必须是学生
+    if (user.role !== 'student') {
+      return res.status(403).json({ 
+        success: false, 
+        message: '仅限学生用户操作' 
+      });
+    }
+
+    // 2️⃣ 查找用户
+    const users = router.db.get('users');
+    const currentUser = users.find({ id: user.id }).value();
+    if (!currentUser) {
+      return res.status(404).json({ 
+        success: false, 
+        message: '用户不存在' 
+      });
+    }
+
+    // 3️⃣ 模拟缴费逻辑
+    // 假设学费金额在用户数据中已定义，例如 user.tuition = 50000
+    const tuitionAmount = currentUser.tuition || 50000; // 默认5万
+
+    // 🚨 这里是模拟！真实场景应对接支付平台
+    console.log(`[模拟支付] 学生 ${currentUser.name} 正在缴纳 ${tuitionAmount} 元学费...`);
+
+    // 4️⃣ 更新用户状态：标记为已缴费
+    users.find({ id: user.id }).assign({ 
+      tuitionPaid: true 
+    }).write();
+
+    // 5️⃣ 强制保存
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+    res.json({ 
+      success: true, 
+      message: `学费缴纳成功！金额：${tuitionAmount} 元`, 
+      data: { 
+        tuitionPaid: true, 
+        amount: tuitionAmount 
+      } 
+    });
+
+  } catch (error) {
+    console.error('缴纳学费失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+// 新增接口：获取学生的学分记录
+server.get('/credit/records', (req, res) => {
+  try {
+    const { user } = req;
+    const { studentId } = req.query; // 可以查自己的，或高校查指定学生
+
+    // 1️⃣ 身份验证
+    if (user.role === 'student') {
+      // 学生只能查自己的
+      if (studentId && Number(studentId) !== user.id) {
+        return res.status(403).json({ 
+          success: false, 
+          message: '无权查询其他学生的记录' 
+        });
+      }
+      const records = router.db.get('creditRecords')
+        .filter({ studentId: user.id })
+        .orderBy('grantedAt', 'desc')
+        .value();
+      return res.json({ success: true, data: records });
+    } 
+    else if (user.role === 'university') {
+      // 高校可以查自己学校所有学生的记录
+      // 这里需要一个逻辑：如何关联学生和高校？假设学生有 university 字段
+      if (!studentId) {
+        return res.status(400).json({ 
+          success: false, 
+          message: '高校用户需提供 studentId' 
+        });
+      }
+      const records = router.db.get('creditRecords')
+        .filter({ studentId: Number(studentId) })
+        .value();
+      return res.json({ success: true, data: records });
+    } 
+    else {
+      return res.status(403).json({ 
+        success: false, 
+        message: '权限不足' 
+      });
+    }
+
+  } catch (error) {
+    console.error('获取学分记录失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+// 新增接口：高校为学生添加学分（录入成绩后）
+server.post('/credit/add', (req, res) => {
+  try {
+    const { user } = req;
+    const { studentId, courseName, creditsEarned } = req.body;
+
+    // 1️⃣ 身份验证：必须是高校用户
+    if (user.role !== 'university') {
+      return res.status(403).json({ 
+        success: false, 
+        message: '仅限高校用户操作' 
+      });
+    }
+
+    // 2️⃣ 参数校验
+    if (!studentId || !courseName || creditsEarned === undefined) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '缺少 studentId, courseName 或 creditsEarned 参数' 
+      });
+    }
+
+    // 3️⃣ 查找学生
+    const users = router.db.get('users');
+    const student = users.find({ id: Number(studentId), role: 'student' }).value();
+    if (!student) {
+      return res.status(404).json({ 
+        success: false, 
+        message: '学生不存在或非学生身份' 
+      });
+    }
+
+    // 4️⃣ 计算新的总学分
+    const currentCredits = student.credits || 0;
+    const newTotalCredits = currentCredits + Number(creditsEarned);
+
+    // 5️⃣ 更新学生学分
+    users.find({ id: Number(studentId) }).assign({ 
+      credits: newTotalCredits 
+    }).write();
+
+    // 6️⃣ 记录学分变更日志（可选）
+    const creditRecord = {
+      id: generateId(),
+      studentId: Number(studentId),
+      courseName,
+      creditsEarned: Number(creditsEarned),
+      grantedBy: user.university, // 记录是哪个学校授予的
+      grantedAt: new Date().toISOString()
+    };
+    router.db.get('creditRecords').push(creditRecord).write(); // 假设有 creditRecords 表
+
+    // 7️⃣ 强制保存
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+
+    res.json({ 
+      success: true, 
+      message: '学分录入成功', 
+      data: { 
+        studentId: Number(studentId),
+        courseName,
+        creditsEarned: Number(creditsEarned),
+        totalCredits: newTotalCredits
+      } 
+    });
+
+  } catch (error) {
+    console.error('录入学分失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
 
 
 // 获取课程列表
@@ -719,7 +1203,266 @@ server.get('/api/chat/student/:studentId/conversations', (req, res) => {
     });
   }
 });
+server.get('/api/chat/enterprise/:enterpriseId/conversations', (req, res) => {
+  try {
+    const { enterpriseId } = req.params;
+    const db = router.db;
 
+    const eid = Number(enterpriseId);
+    if (isNaN(eid)) {
+      return res.status(400).json({
+        success: false,
+        message: 'enterpriseId 必须是有效数字'
+      });
+    }
+
+    // 1. 检查企业是否存在
+    const enterprise = db.get('enterprises').find({ id: eid }).value();
+    if (!enterprise) {
+      return res.status(404).json({
+        success: false,
+        message: '企业不存在'
+      });
+    }
+    server.get('/achievements', (req, res) => {
+  try {
+    const { type } = req.query;
+    let achievements = router.db.get('achievements').value();
+    
+    // 如果提供了 type 参数，则进行筛选
+    if (type) {
+      achievements = achievements.filter(item => item.type === type);
+    }
+    
+    res.json({ 
+      success: true, 
+      data: achievements 
+    });
+  } catch (error) {
+    console.error('获取成果列表失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+
+/**
+ * GET /achievements/:id
+ * 获取单个成果详情
+ */
+server.get('/achievements/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const achievement = router.db.get('achievements').find({ id }).value();
+    
+    if (!achievement) {
+      return res.status(404).json({ 
+        success: false, 
+        message: '成果不存在' 
+      });
+    }
+    
+    res.json({ 
+      success: true, 
+      data: achievement 
+    });
+  } catch (error) {
+    console.error('获取成果详情失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+
+/**
+ * POST /achievements
+ * 发布新的成果
+ * 请求体 (Body) 示例:
+ * {
+ *   "title": "基于AI的智能招聘系统",
+ *   "type": "project", // research | project | report
+ *   "author": "清华大学",
+ *   "publishDate": "2023-10-01",
+ *   "description": "项目描述...",
+ *   "url": "/files/project1.pdf"
+ * }
+ */
+server.post('/achievements', verifyToken, (req, res) => {
+  try {
+    const { title, type, author, publishDate, description, url } = req.body;
+    
+    // 验证必要字段
+    if (!title || !type || !author) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '标题、类型和作者为必填项' 
+      });
+    }
+    
+    // 验证成果类型
+    const validTypes = ['research', 'project', 'report'];
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '成果类型无效，应为 research, project, report 之一' 
+      });
+    }
+    
+    const newAchievement = {
+      id: generateId(), // 使用您代码中已有的 generateId 函数
+      title,
+      type,
+      author,
+      publishDate: publishDate || new Date().toISOString().split('T')[0],
+      description: description || '',
+      url: url || '',
+      createTime: new Date().toISOString()
+    };
+    
+    // 写入数据库
+    router.db.get('achievements').push(newAchievement).write();
+    // 强制同步保存文件
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+    
+    res.status(201).json({ 
+      success: true, 
+      message: '成果发布成功', 
+      data: newAchievement 
+    });
+  } catch (error) {
+    console.error('发布成果失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+
+/**
+ * PUT /achievements/:id
+ * 更新成果信息
+ */
+server.put('/achievements/:id', verifyToken, (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const achievement = router.db.get('achievements').find({ id }).value();
+    
+    if (!achievement) {
+      return res.status(404).json({ 
+        success: false, 
+        message: '成果不存在' 
+      });
+    }
+    
+    // 更新信息
+    router.db.get('achievements').find({ id }).assign(req.body).write();
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+    
+    res.json({ 
+      success: true, 
+      message: '成果信息更新成功' 
+    });
+  } catch (error) {
+    console.error('更新成果失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+
+/**
+ * DELETE /achievements/:id
+ * 删除成果
+ */
+server.delete('/achievements/:id', verifyToken, (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const achievement = router.db.get('achievements').find({ id }).value();
+    
+    if (!achievement) {
+      return res.status(404).json({ 
+        success: false, 
+        message: '成果不存在' 
+      });
+    }
+    
+    router.db.get('achievements').remove({ id }).write();
+    fs.writeFileSync(dbFilePath, JSON.stringify(router.db.getState(), null, 2));
+    
+    res.json({ 
+      success: true, 
+      message: '成果删除成功' 
+    });
+  } catch (error) {
+    console.error('删除成果失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误' 
+    });
+  }
+});
+修改成通过type去筛选
+
+    // 2. 找出该企业参与的所有会话
+    const conversations = db.get('chatConversations')
+      .filter({ enterpriseId: eid })
+      .value()
+      .sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+
+    // 3. 补充学生信息 + 消息列表
+    const result = conversations.map(conv => {
+      const student = db.get('users').find({ id: conv.studentId, role: 'student' }).value();
+
+      // 🔽 查询该会话下的所有消息
+      const messages = db.get('chatMessages')
+        .filter({ conversationId: conv.id })
+        .orderBy('timestamp', 'asc') // 按时间正序排列（从旧到新）
+        .value();
+
+      return {
+        ...conv,
+        student: student
+          ? {
+              id: student.id,
+              name: student.name || '匿名学生',
+              avatar: student.avatar || null,
+              major: student.major || null,
+              school: student.university || null
+            }
+          : {
+              id: null,
+              name: '已删除学生',
+              avatar: null,
+              major: null,
+              school: null
+            },
+        messages: messages.map(msg => ({
+          id: msg.id,
+          senderType: msg.senderType,
+          senderId: msg.senderId,
+          content: msg.content,
+          timestamp: msg.timestamp
+        }))
+      };
+    });
+
+    res.json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    console.error('【服务器错误】查询企业会话及消息失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '服务器内部错误，请稍后重试',
+      error: error.message
+    });
+  }
+});
 // 🔹 2. 获取某个会话的消息记录
 server.get('/api/chat/conversations/:id/messages', (req, res) => {
   try {
@@ -1020,7 +1763,7 @@ server.post('/api/chat/mark-as-read', (req, res) => {
   }
 });
 // 🔹 4. 标记消息为已读
-server.put('/api/chat/messages/read', verifyToken, (req, res) => {
+server.put('/api/chat/messages/read', (req, res) => {
   const { conversationId } = req.body;
   const db = router.db;
 
@@ -1170,7 +1913,7 @@ server.delete('/api/chat/messages/:id', verifyToken, (req, res) => {
 });
 
 // 🔹 5. 获取未读消息总数
-server.get('/api/chat/unread-count', verifyToken, (req, res) => {
+server.get('/api/chat/unread-count', (req, res) => {
   const db = router.db;
   const userId = req.user.id;
   const user = db.get('users').find({ id: userId }).value();

@@ -1,71 +1,155 @@
-import {getstudentdetail} from '../../../api/company/student'
-import { useParams } from 'react-router-dom'
-import {useEffect, useState} from 'react'
+import { getstudentdetail } from '../../../api/company/student';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import {updateapply,sendmessage} from  '../../../api/company/leader'
+
 interface StudentResumeDetail {
-  id: number;                     // 学生ID
-  name: string;                  // 姓名
-  age: number;                   // 年龄
-  gender: string;                // 性别
-  phone: string;                 // 电话
-  email: string;                 // 邮箱
-  location: string;              // 所在城市
-  university: string;            // 毕业院校
-  major: string;                 // 专业
-  education: string;             // 学历
-  status: string;                // 当前状态（如“找工作中”）
-  expectedJob: string;           // 期望职位
-  expectedSalary: string;        // 期望薪资
-  experience: string;            // 实习或工作经验
-  selfIntro: string;             // 自我介绍
-  skills: string[];              // 技能列表
-  portfolioUrl: string;          // 作品集链接
-  resumeUrl: string;             // 简历文件链接
-  createTime: string;            // 创建时间（ISO 字符串）
+  id: number;
+  name: string;
+  age: number;
+  gender: string;
+  phone: string;
+  email: string;
+  location: string;
+  university: string;
+  major: string;
+  education: string;
+  status: string;
+  expectedJob: string;
+  expectedSalary: string;
+  experience: string;
+  selfIntro: string;
+  skills: string[];
+  portfolioUrl: string;
+  resumeUrl: string;
+  createTime: string;
 }
 
 const StudentDetail = () => {
-    const [student,setStudent] = useState<StudentResumeDetail>()
+  const [student, setStudent] = useState<StudentResumeDetail>();
+  const params = useParams();
+  const studentid = Number(params.studentid);
+  const id = Number(params.id)
+  const updateapplys = async (id:number,status:string) => {
+    const res = await updateapply(id,status)
+     console.log(res);
+  }
+  const sendmessages = async (contest:string) => {
+    const res = await sendmessage(studentid,5003,contest,'enterprise')
+    console.log(res);
+  }
 
-    const params = useParams()
-    const id = Number(params.id)
 
-    const show = async ()=>{
-        const res = await getstudentdetail(id)
-        console.log(res)
-        setStudent(res.data.data)
+ const show = async () => {
+      const res = await getstudentdetail(studentid);
+      console.log(res);
+      setStudent(res.data.data);
+    };
+  useEffect(() => {
+      show();
+  
+    if(student?.status==='待处理'){
+           updateapplys(id,'已查看')
     }
-    useEffect(()=>{
-        show()
-    },[])
+  }, []);
 
-   return (
-    <div>
-    <div>
-          <h1>学生详情</h1>
-    <p>姓名：{student?.name}</p>
-    <p>年龄：{student?.age}</p>
-    <p>性别：{student?.gender}</p>
-    <p>电话：{student?.phone}</p>
-    <p>邮箱：{student?.email}</p>
-    <p>所在城市：{student?.location}</p>
-    <p>毕业院校：{student?.university}</p>
-    <p>专业：{student?.major}</p>
-    <p>学历：{student?.education}</p>
-    <p>当前状态：{student?.status}</p>
-    <p>期望职位：{student?.expectedJob}</p>
-    <p>期望薪资：{student?.expectedSalary}</p>
-    <p>实习或工作经验：{student?.experience}</p>
-    <p>自我介绍：{student?.selfIntro}</p>
-    <p>技能：{student?.skills.join(', ')}</p>
-    <p>作品集链接：{student?.portfolioUrl}</p>
-    <p>简历文件链接：{student?.resumeUrl}</p>
-    <p>创建时间：{student?.createTime}</p>
+  return (
+    <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '24px' }}>🎓 学生详情</h1>
+      <div style={{ border: '1px solid #ccc', borderRadius: '10px', padding: '20px', backgroundColor: '#f9f9f9' }}>
+        <div style={{ marginBottom: '16px' }}>
+          <strong>姓名：</strong>{student?.name} &nbsp;&nbsp;
+          <strong>年龄：</strong>{student?.age} &nbsp;&nbsp;
+          <strong>性别：</strong>{student?.gender}
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>电话：</strong>{student?.phone} <br />
+          <strong>邮箱：</strong>{student?.email}
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>所在城市：</strong>{student?.location} <br />
+          <strong>毕业院校：</strong>{student?.university} <br />
+          <strong>专业：</strong>{student?.major} <br />
+          <strong>学历：</strong>{student?.education}
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>当前状态：</strong>{student?.status} <br />
+          <strong>期望职位：</strong>{student?.expectedJob} <br />
+          <strong>期望薪资：</strong>{student?.expectedSalary}
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>实习/工作经验：</strong>
+          <p style={{ margin: '4px 0' }}>{student?.experience}</p>
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>自我介绍：</strong>
+          <p style={{ margin: '4px 0' }}>{student?.selfIntro}</p>
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>技能：</strong>{student?.skills.join(', ')}
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <strong>作品集：</strong>
+          <a href={student?.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff' }}>
+            点击查看
+          </a>
+          <br />
+          <strong>简历文件：</strong>
+          <a href={student?.resumeUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff' }}>
+            点击下载
+          </a>
+        </div>
+
+        <div style={{ marginBottom: '8px', color: '#888' }}>
+          <small>创建时间：{new Date(student?.createTime || '').toLocaleString()}</small>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center', gap: '20px' }}>
+        <button
+          onClick={()=>{updateapplys(id,'发起面试')
+            sendmessages('你最近有时间来参加我们这的面试吗')
+          }
+
+          }
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+          }}
+        >
+          联系学生
+        </button>
+        <button
+          onClick={()=>
+           { updateapplys(id,'已拒绝')
+               sendmessages('不好意思，你不符合我们的要求')
+           }}
+
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#f44336',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+          }}
+        >
+          拒绝学生
+        </button>
+      </div>
     </div>
-    <div>
-    <button>联系学生</button>
-      <button>拒绝学生</button>
-    </div>
-    </div>
-   )
-}
-export default StudentDetail
+  );
+};
+
+export default StudentDetail;

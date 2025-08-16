@@ -34,7 +34,11 @@
       "selfIntro": "热爱编程，喜欢挑战复杂系统。",
       "status": "找工作中",
       "createTime": "2025-08-05T10:00:00Z",
-      "role": "student"
+      "role": "student",
+      "credits": 100,
+      "requiredCredits": 120,
+      "tuition": 48000,
+      "tuitionPaid": true
     },
     {
       "id": 5002,
@@ -65,6 +69,63 @@
       "phone": "18812345678",
       "code": "847362",
       "createdAt": "2025-08-02T14:20:00Z"
+    }
+  ],"enrollments":[],
+  
+  "achievements": [
+    {
+      "id": 10001,
+      "title": "基于深度学习的智能招聘匹配算法研究",
+      "type": "research",
+      "author": "清华大学人工智能研究院",
+      "publishDate": "2023-12-15",
+      "description": "本研究提出了一种新的深度学习模型，用于精准匹配求职者与岗位，准确率提升15%。",
+      "url": "/files/research_paper_ai_recruitment.pdf",
+      "createTime": "2023-12-15T10:00:00Z",
+      "context": "本研究旨在解决传统招聘系统中人岗匹配精度不足的问题。我们提出了一种基于Transformer架构的深度学习模型，该模型能够同时分析求职者的简历文本、项目经验和技能标签，以及岗位描述中的职责要求和技能需求。通过在大规模真实招聘数据集上的训练和验证，该模型在关键指标上表现优异，平均匹配准确率相比传统方法提升了15%，尤其在跨领域和新兴技术岗位的匹配上展现出显著优势。"
+    },
+    {
+      "id": 10002,
+      "title": "智慧校园就业服务平台",
+      "type": "project",
+      "author": "北京大学计算机系",
+      "publishDate": "2023-10-20",
+      "description": "一个连接高校、企业和学生的综合性就业服务项目，已服务超过1000名毕业生。",
+      "url": "/projects/campus_job_platform_demo.mp4",
+      "createTime": "2023-10-20T14:30:00Z",
+      "context": "智慧校园就业服务平台是一个为期18个月的校企合作项目。项目旨在构建一个集信息发布、智能匹配、在线面试和数据分析于一体的闭环就业生态系统。平台为学生提供个性化的职位推荐和职业规划指导，为企业提供高效的简历筛选和人才库管理工具，为高校提供毕业生就业情况的可视化分析报告。项目自上线以来，已成功对接200余家企业，为超过1000名应届毕业生提供了精准的就业服务，平台日均活跃用户数超过500。"
+    },
+    {
+      "id": 10003,
+      "title": "2024年中国人工智能行业人才发展报告",
+      "type": "report",
+      "author": "智联招聘研究院",
+      "publishDate": "2024-01-10",
+      "description": "全面分析了AI行业的人才供需、薪资水平和未来发展趋势。",
+      "url": "/reports/2024_AI_Talent_Report.pdf",
+      "createTime": "2024-01-10T09:15:00Z",
+      "context": "本报告基于智联招聘平台2023年度超过100万条AI相关职位数据和500万份求职者数据进行深度分析。报告指出，AI人才需求持续旺盛，算法工程师、机器学习专家等核心岗位的竞争依然激烈。薪资方面，拥有3-5年经验的AI工程师平均年薪已突破40万元。报告预测，未来一年，大模型、AIGC（生成式AI）和AI安全将成为人才需求增长最快的三个方向。同时，企业对人才的要求从单一技术能力向‘技术+业务’的复合型能力转变。"
+    },
+    {
+      "id": 10004,
+      "title": "区块链技术在学历认证中的应用",
+      "author": "浙江大学区块链实验室",
+      "publishDate": "2023-11-05",
+      "description": "探讨了利用区块链技术解决学历造假问题的可行性方案。",
+      "url": "/files/research_blockchain_diploma.pdf",
+      "createTime": "2023-11-05T16:20:00Z",
+      "context": "针对当前学历证书易伪造、验证流程繁琐的问题，本研究设计并实现了一个基于联盟链的分布式学历认证系统。该系统将毕业生的学历信息（如姓名、学号、专业、学位、成绩单摘要等）的哈希值上链存储。由于区块链的不可篡改性，一旦信息上链，任何后续的修改都会被记录并可追溯。用人单位或个人可以通过一个公开的验证平台，输入证书编号和毕业生信息，系统会自动计算哈希并与链上数据比对，从而在几秒钟内完成真伪验证，极大地提高了验证效率和安全性。"
+    },
+    {
+      "id": 10005,
+      "title": "企业数字化转型对人才需求的影响调研",
+      "type": "report",
+      "author": "腾讯研究院",
+      "publishDate": "2023-09-18",
+      "description": "通过对500家企业的调研，揭示了数字化转型背景下企业对复合型人才的迫切需求。",
+      "url": "/reports/digital_transformation_talent_survey.pdf",
+      "createTime": "2023-09-18T11:05:00Z",
+      "context": "本次调研覆盖了互联网、制造、金融、零售等行业的500家正在或计划进行数字化转型的企业。调研发现，超过75%的企业表示，‘既懂技术又懂业务’的复合型人才是其数字化转型成功的关键。企业对数据分析师、产品经理、IT项目经理等岗位的需求量显著增加，且对这些岗位的要求不再局限于技术栈，更强调其商业洞察力、沟通协作能力和项目管理能力。报告建议高校和职业教育机构应调整课程设置，加强跨学科培养，以满足市场的新需求。"
     }
   ],
   "courses": [
@@ -147,8 +208,177 @@
       "schedule": "周四 14:00-16:00",
       "department": "信息工程学院",
       "university": "西南石油大学"
-    }
+    },
+    {
+    "id": 9,
+    "school": "西南石油大学",
+    "department": "石油与天然气工程学院",
+    "courseCode": "PETE301",
+    "name": "油藏工程",
+    "teacher": "张建国",
+    "credits": 4,
+    "schedule": "周一 1-2节, 周三 1-2节",
+    "location": "明辨楼A301",
+    "capacity": 80,
+    "enrolledCount": 0,
+    "description": "学习油藏动态分析、驱油机理与开发方案设计"
+  },
+  {
+    "id": 10,
+    "school": "西南石油大学",
+    "department": "石油与天然气工程学院",
+    "courseCode": "PETE305",
+    "name": "钻井工程",
+    "teacher": "李伟",
+    "credits": 3,
+    "schedule": "周二 3-4节, 周四 3-4节",
+    "location": "明辨楼A402",
+    "capacity": 75,
+    "enrolledCount": 0,
+    "description": "钻井工艺、井控技术、钻井液性能分析"
+  },
+  {
+    "id": 11,
+    "school": "西南石油大学",
+    "department": "机电工程学院",
+    "courseCode": "MECH201",
+    "name": "机械设计基础",
+    "teacher": "王红梅",
+    "credits": 4,
+    "schedule": "周一 5-6节, 周三 5-6节",
+    "location": "思学楼B205",
+    "capacity": 90,
+    "enrolledCount": 0,
+    "description": "连杆机构、齿轮传动、轴系设计"
+  },
+  {
+    "id": 12,
+    "school": "西南石油大学",
+    "department": "机电工程学院",
+    "courseCode": "MECH302",
+    "name": "流体力学与泵阀技术",
+    "teacher": "赵强",
+    "credits": 3,
+    "schedule": "周五 1-3节",
+    "location": "思学楼B308",
+    "capacity": 60,
+    "enrolledCount": 0,
+    "description": "流体静力学、动量方程、离心泵原理与应用"
+  },
+  {
+    "id": 13,
+    "school": "西南石油大学",
+    "department": "计算机科学学院",
+    "courseCode": "CS201",
+    "name": "数据结构与算法",
+    "teacher": "刘洋",
+    "credits": 4,
+    "schedule": "周二 1-2节, 周四 1-2节",
+    "location": "明理楼C401",
+    "capacity": 120,
+    "enrolledCount": 0,
+    "description": "链表、栈、队列、树、图、排序与查找算法"
+  },
+  {
+    "id": 14,
+    "school": "西南石油大学",
+    "department": "计算机科学学院",
+    "courseCode": "CS305",
+    "name": "数据库系统原理",
+    "teacher": "陈静",
+    "credits": 3,
+    "schedule": "周三 7-8节, 周五 7-8节",
+    "location": "明理楼C503",
+    "capacity": 100,
+    "enrolledCount": 0,
+    "description": "关系模型、SQL、事务管理、索引与优化"
+  },
+  {
+    "id": 15,
+    "school": "西南石油大学",
+    "department": "地球科学与技术学院",
+    "courseCode": "GEO201",
+    "name": "构造地质学",
+    "teacher": "吴峰",
+    "credits": 3,
+    "schedule": "周一 3-4节, 周三 3-4节",
+    "location": "博学楼D201",
+    "capacity": 70,
+    "enrolledCount": 0,
+    "description": "断层、褶皱、节理等地质构造分析"
+  },
+  {
+    "id": 16,
+    "school": "西南石油大学",
+    "department": "地球科学与技术学院",
+    "courseCode": "GEO302",
+    "name": "地球物理测井",
+    "teacher": "周琳",
+    "credits": 4,
+    "schedule": "周四 5-7节",
+    "location": "博学楼D306",
+    "capacity": 50,
+    "enrolledCount": 0,
+    "description": "测井方法、曲线解释、储层识别技术"
+  },
+  {
+    "id": 17,
+    "school": "西南石油大学",
+    "department": "新能源与材料学院",
+    "courseCode": "NEM301",
+    "name": "新能源材料概论",
+    "teacher": "黄志刚",
+    "credits": 3,
+    "schedule": "周二 5-6节, 周四 5-6节",
+    "location": "笃行楼E101",
+    "capacity": 80,
+    "enrolledCount": 0,
+    "description": "锂电、氢能、太阳能材料基础与应用"
+  },
+  {
+    "id": 18,
+    "school": "西南石油大学",
+    "department": "经济管理学院",
+    "courseCode": "BADM201",
+    "name": "工程经济学",
+    "teacher": "徐丽",
+    "credits": 3,
+    "schedule": "周五 5-7节",
+    "location": "经管楼F203",
+    "capacity": 110,
+    "enrolledCount": 0,
+    "description": "投资评估、成本效益分析、项目经济评价"
+  },
+  {
+    "id": 19,
+    "school": "西南石油大学",
+    "department": "理学院",
+    "courseCode": "MATH202",
+    "name": "线性代数",
+    "teacher": "高翔",
+    "credits": 3,
+    "schedule": "周一 7-8节, 周三 7-8节",
+    "location": "明理楼A102",
+    "capacity": 130,
+    "enrolledCount": 0,
+    "description": "矩阵运算、向量空间、特征值与特征向量"
+  },
+  {
+    "id": 20,
+    "school": "西南石油大学",
+    "department": "外国语学院",
+    "courseCode": "ENGL101",
+    "name": "大学英语（四）",
+    "teacher": "林雪",
+    "credits": 2,
+    "schedule": "周二 7-8节, 周四 7-8节",
+    "location": "语信楼G305",
+    "capacity": 90,
+    "enrolledCount": 0,
+    "description": "听说读写综合训练，CET-6备考导向"
+  }
   ],
+
   "enterpriseNeeds": [
     {
       "id": 1,
@@ -225,7 +455,7 @@
           "postedAt": "2025-07-22",
           "validUntil": "2025-08-22",
           "status": "招聘中",
-          "views": 1997,
+          "views": 2008,
           "applications": 134
         },
         {
@@ -296,7 +526,7 @@
           "postedAt": "2025-07-22",
           "validUntil": "2025-08-22",
           "status": "招聘中",
-          "views": 1991,
+          "views": 1996,
           "applications": 134
         }
       ]
@@ -775,6 +1005,13 @@
       "jobId": 102,
       "status": "发起面试",
       "timestamp": "2025-08-07T11:36:18.557Z"
+    },
+    {
+      "id": 1005,
+      "studentId": 1001,
+      "jobId": 105,
+      "status": "待处理",
+      "timestamp": "2025-08-09T05:52:40.323Z"
     }
   ],
   "careerPlans": [
@@ -944,9 +1181,9 @@
       "id": "conv_1001_5003",
       "studentId": 1001,
       "enterpriseId": 5003,
-      "lastMessage": "什么时候进行面试",
-      "lastMessageTime": "2025-08-08T15:42:57.638Z",
-      "unreadCount": 1,
+      "lastMessage": "在吗",
+      "lastMessageTime": "2025-08-09T06:01:22.859Z",
+      "unreadCount": 8,
       "status": "active",
       "createdAt": "2025-08-08T14:27:29.811Z"
     }
@@ -987,6 +1224,114 @@
       "type": "text",
       "status": "sent",
       "timestamp": "2025-08-08T15:42:57.638Z"
+    },
+    {
+      "id": "717729005",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "enterprise",
+      "senderId": 5003,
+      "content": "你最近有时间来参加我们这的面试吗",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:35:29.005Z"
+    },
+    {
+      "id": "717838038",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "好",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:37:18.039Z"
+    },
+    {
+      "id": "717954198",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "好的",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:39:14.198Z"
+    },
+    {
+      "id": "718760309",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "你好,我想申请该岗位",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:52:40.309Z"
+    },
+    {
+      "id": "718929649",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "请回复我",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:55:29.649Z"
+    },
+    {
+      "id": "719107989",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "收到回复",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:58:27.989Z"
+    },
+    {
+      "id": "719117561",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "你好",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:58:37.561Z"
+    },
+    {
+      "id": "719192280",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "你好",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T05:59:52.280Z"
+    },
+    {
+      "id": "719282859",
+      "conversationId": "conv_1001_5003",
+      "studentId": 1001,
+      "enterpriseId": 5003,
+      "senderType": "student",
+      "senderId": 1001,
+      "content": "在吗",
+      "type": "text",
+      "status": "sent",
+      "timestamp": "2025-08-09T06:01:22.859Z"
     }
   ],
   "universities": [

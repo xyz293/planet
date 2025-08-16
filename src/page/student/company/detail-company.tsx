@@ -4,6 +4,7 @@ import {sendapply} from '../../../api/student/user'
 import { useEffect, useState } from 'react';
 import './detail.scss';
 import {getviews} from '../../../api/student/college'
+import {sendmessage} from '../../../api/student/user'
 
 // 职位类型
 interface JobDetail {
@@ -33,6 +34,7 @@ interface JobDetail {
   };
   applications: number;
   views: number;
+
 }
 
 const DetailCompany = () => {
@@ -53,6 +55,12 @@ const DetailCompany = () => {
     const res = await sendapply(1001,id );
     console.log(res);
   };
+   const sendmessages = async (contest:string,enterpriseId
+:number) => {
+
+    const res = await sendmessage(1001,enterpriseId,contest,'student')
+    console.log(res);
+  }
 
 
   useEffect(() => {
@@ -134,7 +142,10 @@ const DetailCompany = () => {
 
       <div className="job-section">
         <h3>申请</h3>
-        <button onClick={() => sendapplyjob(item.jobId)}>申请</button>
+        <button onClick={() => {sendapplyjob(item.jobId)
+          sendmessages('你好,我想申请该岗位',item.enterpriseId)
+
+        }}>申请</button>
       </div>
     </div>
   </div>

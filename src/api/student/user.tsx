@@ -100,3 +100,40 @@ export const myapply =  (id:number) => {
 
   })
 }
+export const getconserversation = (studentId:number) => {
+
+  return request({
+    url: `/api/chat/student/${studentId}/conversations`,
+    method: 'get',
+
+  })
+}
+export const getdetailconversation =async (id:string,studentId:number,enterpriseId:number) => {
+
+
+  return request({
+    url: `/api/chat/conversations/${id}/messages`,
+    method: 'get',
+    params:{
+      studentId:studentId,
+      enterpriseId:enterpriseId
+    }
+
+  })
+
+}
+export const sendmessage = async (studnetid:number,enterid:number,contest:string,sender:string) => {
+
+  return request({
+    url: `/api/chat/messages`,
+    method: 'post',
+    data: {
+      studentId: studnetid,
+      enterpriseId: enterid,
+      content: contest,
+      sender:sender,
+
+    }
+  })
+}
+

@@ -12,6 +12,7 @@ const DetailCollege = lazy(()=>import("../page/student/college/detail-college"))
 const Resourse = lazy(()=>import("../page/student/college/detail-page"))
 const StudentJobDetail = lazy(()=>import("../page/company/compment/job-detail"))
 const StudentDetail = lazy(()=>import("../page/company/compment/student-detail"))
+const ConservationDetail = lazy(()=>import("../page/student/apply-conservation/conservation-detail"))
 
 
 const router =[
@@ -57,8 +58,15 @@ const router =[
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><StudentJobDetail/></Suspense>
     },
     {
-      path:'/studentdetail/:id',
+      path:'/studentdetail/:studentid/:id',
+
       element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><StudentDetail/></Suspense>
+
+    },
+    {
+      path:'/conservation/:id/:conversationid',
+
+      element: <Suspense fallback={<Spin tip="Loading" size="large"></Spin>}><ConservationDetail/></Suspense>
 
     }
 ]

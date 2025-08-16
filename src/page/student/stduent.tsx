@@ -3,6 +3,7 @@ import UserInfo from '../student/info/userinfon'
 import Baseinfo from '../student/company/baseinfo'
 import CollegeGudice from '../student/college/basecollege'
 import Basework from '../student/work/basework'
+import  Conservation from '../student/apply-conservation/conservations'
 import {useState} from 'react';
 import {
   AppstoreOutlined,
@@ -41,7 +42,8 @@ const items = [
    '个人信息',
    '公司信息',
    "校园指导",
-   "求职信息",
+   "求职进度",
+    '求职信息'
   ];
   return {
     key: String(index + 1),
@@ -61,7 +63,10 @@ const Student = () => {
         return <CollegeGudice/>;
       case '4':
         return <Basework/>;
-
+      case '5':
+        return <Conservation/>;
+      default:
+        return null;
     }
   };
   const {

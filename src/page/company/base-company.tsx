@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import BaseStudent from  './compment/apply'
+import Conservationlist from './compment/conservation'
 import {
   AppstoreOutlined,
   BarChartOutlined,
@@ -34,6 +35,7 @@ const items = [
 ].map((icon, index) => {
   const labels = [
      '岗位列表',
+     '求职消息'
 
   ];
   return {
@@ -49,7 +51,8 @@ const Student = () => {
       case '1':
         return <BaseStudent/>;
       case '2':
-        return null;
+        return <Conservationlist/>;
+
       case '3':
         return null;
     }

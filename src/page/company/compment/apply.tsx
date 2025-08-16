@@ -21,6 +21,7 @@ const JobSeekerList = () => {
     try {
       const res = await getcompanyjob(5003);
       setCandidates(res.data);
+      console.log(res)
     } catch (err) {
       console.error('获取职位失败:', err);
     }
